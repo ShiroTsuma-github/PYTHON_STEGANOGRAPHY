@@ -2,7 +2,8 @@ import tkinter as tk
 import os
 from PIL import ImageTk, Image
 import generateEncodingKey as gek
-key = gek.GenerateKey()
+from datetime import datetime
+key = gek.GenerateKey(18)
 
 ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 
@@ -19,16 +20,18 @@ def getting_image():
     print("Image downloaded")
 
 def creating_encoded_key():
+    currentDateAndTime = datetime.now().strftime("%H:%M:%S")
     key_crypting_text_field.delete(1.0, tk.END)
     key_crypting_text_field.insert(tk.END, next(key))
-    print("Key was created")
+    # output_text_field.delete(1.0, tk.END)
+    output_text_field.insert(tk.END, f'[{currentDateAndTime}]: Key generated\n')
 
 root = tk.Tk()
 root.title("Stenography App")
 
 # Set the size of the window
 window_width = 640
-window_height = 480
+window_height = 640
 root.geometry(f"{window_width}x{window_height}")
 
 # Calculate the position of the window to center it on the screen
@@ -68,13 +71,13 @@ creating_key_button.grid(row=2, column=1)
 label_for_input_field = tk.Label(input_output_frame, text="Input data:")
 label_for_input_field.grid(row=0, padx=10, pady=2)
 
-input_text_field = tk.Text(input_output_frame, width=75, height=2)
+input_text_field = tk.Text(input_output_frame, width=75, height=4)
 input_text_field.grid(row=1, padx=10, pady=5)
 
 label_for_output_field = tk.Label(input_output_frame, text="Output data:")
 label_for_output_field.grid(row=2, padx=10, pady=2)
 
-output_text_field = tk.Text(input_output_frame, width=75, height=2)
+output_text_field = tk.Text(input_output_frame, width=75, height=10)
 output_text_field.grid(row=3, padx=10, pady=5)
 
 image1 = Image.open(f"{ROOT_DIR}/resources/images/png2.png")
