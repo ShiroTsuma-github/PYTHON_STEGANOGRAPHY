@@ -8,15 +8,16 @@ class GenerateKey():
     The key is generated using the key_generator library.
     To get key you have to use next() method.
     """
-    def __init__(self, key_length=32) -> None:
+    def __init__(self, key_length=32, format='int') -> None:
         self.key_length: int = key_length
+        self.format: str = format
         self.__seed: int = int(time.time())
         self.__key: str = self.__generate_key()
 
     def __generate_key(self) -> str:
         key_schema: str = generate(self.key_length,
                                    '', 1, 1,
-                                   type_of_value='int',
+                                   type_of_value=self.format,
                                    seed=self.__seed).get_key()
         return key_schema
 
@@ -31,4 +32,4 @@ class GenerateKey():
 
 if __name__ == "__main__":
     gen_key = GenerateKey()
-    next(gen_key)
+    print(next(gen_key))

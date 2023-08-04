@@ -4,3 +4,4 @@ pillow
 key-generator
 pytest-cov
 pytest-html
+customtkinter
