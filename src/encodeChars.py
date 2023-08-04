@@ -2,9 +2,9 @@ from typing import List
 import json
 
 
-class EncodeChars:
+class EncodeDecodeChars:
     def __init__(self, char_dict_path='charDict.json'):
-        self.__raw_dict: dict = self.__load_json(f"resources/{char_dict_path}")
+        self.__raw_dict: dict = self.__load_json(f"./resources/{char_dict_path}")
         self.code_to_char: dict = self.__raw_dict.get("chars")
         self.char_to_code: dict = {v: k for k, v in self.code_to_char.items()}
         self.name: str = self.__raw_dict.get('custom')
@@ -24,11 +24,18 @@ class EncodeChars:
         padding: int = 8 - len(result)
         return "0" * padding + result
 
-    def string_to_bits(self, text: str) -> List[int]:
+    def bits_to_char(self, bits) -> str:
+        result: str = self.code_to_char.get(int(bits, 2))
+        return result
+
+    def string_to_bits(self, text: str) -> List[str]:
+        result: List[str] = []
         for char in text:
-            print(self.char_to_bits(char))
+            result.append(self.char_to_bits(char))
 
 
 if __name__ == "__main__":
-    encoder = EncodeChars()
+    encoder = EncodeDecodeChars()
+    print("wtf")
     encoder.string_to_bits("Co tam u ciebie adaś!")
+    print(encoder.bits_to_char('0'))
