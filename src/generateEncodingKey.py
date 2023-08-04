@@ -3,6 +3,11 @@ import time
 
 
 class GenerateKey():
+    """Generate a key for encoding and decoding data. The key is a string of numbers.
+    The length of the key is set by the key_length parameter.
+    The key is generated using the key_generator library.
+    To get key you have to use next() method.
+    """
     def __init__(self, key_length=32) -> None:
         self.key_length: int = key_length
         self.__seed: int = int(time.time())

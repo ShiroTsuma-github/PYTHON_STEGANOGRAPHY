@@ -1,6 +1,8 @@
 import tkinter as tk
 import os
 from PIL import ImageTk, Image
+import generateEncodingKey as gek
+key = gek.GenerateKey()
 
 ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 
@@ -17,6 +19,8 @@ def getting_image():
     print("Image downloaded")
 
 def creating_encoded_key():
+    key_crypting_text_field.delete(1.0, tk.END)
+    key_crypting_text_field.insert(tk.END, next(key))
     print("Key was created")
 
 root = tk.Tk()
