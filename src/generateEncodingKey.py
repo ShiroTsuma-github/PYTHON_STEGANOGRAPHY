@@ -31,5 +31,4 @@ class GenerateKey():
 
 if __name__ == "__main__":
     gen_key = GenerateKey()
-    while True:
-        print(next(gen_key))
+    next(gen_key)
