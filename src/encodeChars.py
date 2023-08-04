@@ -1,10 +1,12 @@
 from typing import List
 import json
+import os
 
+ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 
 class EncodeDecodeChars:
     def __init__(self, char_dict_path='charDict.json'):
-        self.__raw_dict: dict = self.__load_json(f"./resources/{char_dict_path}")
+        self.__raw_dict: dict = self.__load_json(f"{ROOT_DIR}/resources/{char_dict_path}")
         self.code_to_char: dict = self.__raw_dict.get("chars")
         self.char_to_code: dict = {v: k for k, v in self.code_to_char.items()}
         self.name: str = self.__raw_dict.get('custom')
@@ -36,6 +38,5 @@ class EncodeDecodeChars:
 
 if __name__ == "__main__":
     encoder = EncodeDecodeChars()
-    print("wtf")
     encoder.string_to_bits("Co tam u ciebie adaś!")
-    print(encoder.bits_to_char('0'))
+    print(encoder.bits_to_char('01000011'))
