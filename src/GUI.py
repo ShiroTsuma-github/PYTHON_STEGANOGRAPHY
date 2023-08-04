@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import tkinter as tk
 
 
@@ -46,3 +47,5 @@ image_label = tk.Label(text="there will be photo", padx=180, pady=135)
 image_label.grid(row=1,rowspan=3, column=1)
 
 root.mainloop()
+=======
+>>>>>>> 9256c0ceb80df01e030f6d4bdb1c3b7fc09991d1
