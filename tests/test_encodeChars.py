@@ -31,10 +31,10 @@ def test__BIT_USED():
 
 
 def test_char_to_bits():
-    assert char_enc_dec.char_to_bits(" ") == "00000000"
-    assert char_enc_dec.char_to_bits("a") == "01000011"
-    assert char_enc_dec.char_to_bits("ą") == "01000100"
-    assert char_enc_dec.char_to_bits("9") == "01101111"
+    assert char_enc_dec.char_to_bits(" ") == "0000000"
+    assert char_enc_dec.char_to_bits("a") == "1000011"
+    assert char_enc_dec.char_to_bits("ą") == "1000100"
+    assert char_enc_dec.char_to_bits("9") == "1101111"
     with pytest.raises(ValueError):
         char_enc_dec.char_to_bits("as")
     with pytest.raises(ValueError):
@@ -94,3 +94,8 @@ def test_bits_to_string():
         char_enc_dec.bits_to_string(["100001110"])
     with pytest.raises(ValueError):
         char_enc_dec.bits_to_string(["1111111"])
+
+
+# cov.stop()
+# cov.save()
+# cov.html_report(directory='coverage')

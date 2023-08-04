@@ -2,3 +2,5 @@ tk
 pytest
 pillow
 key-generator
+pytest-cov
+pytest-html
