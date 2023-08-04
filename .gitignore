@@ -1,5 +1,5 @@
 venv
-.vscode
+launch.json
 .pytest_cache
 __pycache__/
 *.pyc
