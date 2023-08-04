@@ -3,13 +3,14 @@ import os
 from PIL import ImageTk, Image
 import generateEncodingKey as gek
 from datetime import datetime
-key = gek.GenerateKey(18)
+key = gek.GenerateKey(36, 'hex')
 
 ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 
 
 def encoding():
     output_text_field.insert(tk.END, f'[{datetime.now().strftime("%H:%M:%S")}]: Image encoded\n')
+    output_text_field.insert(tk.END, input_text_field.get(1.0, tk.END))
 
 
 def decoding():
