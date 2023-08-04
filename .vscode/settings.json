@@ -1,0 +1,11 @@
+{
+    "python.testing.pytestArgs": [
+        "tests/",
+        "--cov",
+        "--cov-report=html:resources/coverage/full-report",
+        "--html=resources/coverage/report.html",
+        "--self-contained-html",
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+}
