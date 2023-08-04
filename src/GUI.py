@@ -1,5 +1,5 @@
 import tkinter as tk
-
+from PIL import ImageTk, Image
 
 def encoding():
     print("Image encoded")
@@ -30,30 +30,37 @@ y_position = (screen_height - window_height) // 2
 root.geometry(f"{window_width}x{window_height}+{x_position}+{y_position}")
 root.resizable(False, False)
 
-photo_frame = tk.Frame(root, borderwidt=3, relief=tk.GROOVE, padx=180, pady=135)
-photo_frame.pack(side=tk.LEFT, padx=10, pady=10)
+photo_frame = tk.LabelFrame(root, bd=3, relief=tk.GROOVE, width=400, height=300)
+photo_frame.grid(row=0, column=0, padx=5, pady=5)
 
-buttons_frame = tk.Frame(root, borderwidt=3, relief=tk.GROOVE, padx=130, pady=85)
-buttons_frame.pack(side=tk.RIGHT, padx=10, pady=10)
+buttons_frame = tk.LabelFrame(root, bd=3, relief=tk.GROOVE, width=210, height=300)
+buttons_frame.grid(row=0, column=1, padx=5, pady=5)
 
-input_output_frame = tk.Frame(root, borderwidt=3, relief=tk.GROOVE)
-input_output_frame.pack(side=tk.BOTTOM, padx=10, pady=10)
+input_output_frame = tk.LabelFrame(root, bd=3, relief=tk.GROOVE, width=620, height=150)
+input_output_frame.grid(row=1, column=0, columnspan=2, padx=10, pady=5)
 
-encode_button = tk.Button(buttons_frame, text="Encode", command=encoding, padx=10, pady=10)
-encode_button.grid(row=0, column=0)
+#encode_button = tk.Button(buttons_frame, text="Encode", command=encoding)
+#encode_button.pack()
 
-decode_button = tk.Button(buttons_frame, text="Decode", command=decoding, padx=10, pady=10)
-decode_button.grid(row=1, column=0)
+#decode_button = tk.Button(buttons_frame, text="Decode", command=decoding)
+#decode_button.pack()
 
-key_crypting_text_field = tk.Entry(buttons_frame)
-key_crypting_text_field.grid(row=2, column=0)
+#key_crypting_text_field = tk.Entry(buttons_frame)
+#key_crypting_text_field.pack()
 
-input_text_field = tk.Entry(buttons_frame)
-input_text_field.grid(row=0, column=0)
+#input_text_field = tk.Entry(input_output_frame, width=200)
+#input_text_field.pack(padx=10, pady=10)
 
-output_text_field = tk.Entry(buttons_frame)
-output_text_field.grid(row=1, column=0)
+#output_text_field = tk.Entry(input_output_frame, width=300)
+#output_text_field.pack(padx=10, pady=10)
 
-image_label = tk.Label(photo_frame, text="there will be photo")
-image_label.grid(row=1, column=2)
+image1 = Image.open("C:/Users/huber/Desktop/Python/python_steganography/resources/images/png1.png")
+new_image = image1.resize((400, 300))
+test = ImageTk.PhotoImage(new_image)
+
+image_label = tk.Label(photo_frame, image=test)
+image_label.grid(row=0, column=0, sticky="nsew")
+
+
+
 root.mainloop()
