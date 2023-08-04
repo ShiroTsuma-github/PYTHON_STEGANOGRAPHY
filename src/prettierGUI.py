@@ -9,10 +9,10 @@ ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 class Button_Frame(customtkinter.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
-        self.encode = customtkinter.CTkButton(self, text="Encode", command=self.encode_callback)
-        self.encode.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="nsew", columnspan=2)
-        self.decode = customtkinter.CTkButton(self, text="Decode", command=self.decode_callback)
-        self.decode.grid(row=1, column=0, padx=10, pady=(10, 0), sticky="nsew", columnspan=2)
+        self.encode = customtkinter.CTkButton(self, text="Encode",height=70, command=self.encode_callback)
+        self.encode.grid(row=0, column=0, padx=10, pady=(10, 20), sticky="nsew", columnspan=2)
+        self.decode = customtkinter.CTkButton(self, text="Decode",height=70, command=self.decode_callback)
+        self.decode.grid(row=1, column=0, padx=10, pady=(10, 20), sticky="nsew", columnspan=2)
         self.key_frame = Randomise_Space(self)
         self.key_frame.grid(row=2, column=0, padx=10, pady=(10, 0), sticky="nsew")
 
@@ -49,11 +49,11 @@ class InputOutputFrame(customtkinter.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
         self.columnconfigure(0, weight=2)
-        self.rowconfigure(0, weight=2)
-        self.rowconfigure(1, weight=5)
-        self.input_field = customtkinter.CTkEntry(self)
+        self.rowconfigure(0, weight=5)
+        self.rowconfigure(1, weight=2)
+        self.input_field = customtkinter.CTkTextbox(self)
         self.input_field.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="nsew")
-        self.output_field = customtkinter.CTkEntry(self)
+        self.output_field = customtkinter.CTkTextbox(self)
         self.output_field.grid(row=1, column=0, padx=10, pady=(10, 0), sticky="nsew")
 
 
@@ -66,7 +66,8 @@ class App(customtkinter.CTk):
         # self.resizable(False, False)
         self.rowconfigure(1, weight=2)
         self.columnconfigure(1, weight=1)
-        self.photo_image = customtkinter.CTkImage(Image.open("resources/images/png1.png"), size=(370, 290))
+        # self.photo_image = customtkinter.CTkImage(Image.open("resources/images/png1.png"), size=(370, 290))
+        self.photo_image = tk.PhotoImage(file="resources/images/png1.png")
 
 
         self.image_frame = customtkinter.CTkFrame(self)

@@ -29,7 +29,6 @@ def creating_encoded_key():
     # output_text_field.delete(1.0, tk.END)
     output_text_field.insert(tk.END, f'[{currentDateAndTime}]: Key generated\n')
 
-def making_image_usable()
 
 root = tk.Tk()
 root.title("Stenography App")
