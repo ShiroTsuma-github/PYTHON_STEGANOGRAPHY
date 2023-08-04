@@ -1,5 +1,9 @@
 import tkinter as tk
+import os
 from PIL import ImageTk, Image
+
+ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
+
 
 def encoding():
     print("Image encoded")
@@ -54,7 +58,7 @@ input_output_frame.grid(row=1, column=0, columnspan=2, padx=10, pady=5)
 #output_text_field = tk.Entry(input_output_frame, width=300)
 #output_text_field.pack(padx=10, pady=10)
 
-image1 = Image.open("C:/Users/huber/Desktop/Python/python_steganography/resources/images/png1.png")
+image1 = Image.open(f"{ROOT_DIR}/resources/images/img1.jpeg")
 new_image = image1.resize((400, 300))
 test = ImageTk.PhotoImage(new_image)
 
