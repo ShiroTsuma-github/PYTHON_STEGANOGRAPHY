@@ -9,15 +9,17 @@ ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 
 
 def encoding():
-    print("Image encoded")
+    output_text_field.insert(tk.END, f'[{datetime.now().strftime("%H:%M:%S")}]: Image encoded\n')
 
 
 def decoding():
-    print("Image decoded")
+    output_text_field.delete(1.0, tk.END)
+    output_text_field.insert(tk.END, f'[{datetime.now().strftime("%H:%M:%S")}]: Image decoded\n')
+    output_text_field.insert(tk.END, f'Decoded text...\n')
 
 
 def getting_image():
-    print("Image downloaded")
+    print("Getting image...")
 
 def creating_encoded_key():
     currentDateAndTime = datetime.now().strftime("%H:%M:%S")
