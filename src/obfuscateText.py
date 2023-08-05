@@ -1,8 +1,10 @@
+from typing import List
 from encodeChars import EncodeDecodeChars
 from generateEncodingKey import GenerateKey
 
 
 class TextObfuscator():
+    """Obfuscate and deobfuscate text using XOR cipher."""
     def __init__(self,
                  key_length: int = 36,
                  key_format: str = 'hex',
@@ -12,6 +14,15 @@ class TextObfuscator():
         self.__key = next(self.__key_generator)
 
     def __xor(self, a: str, b: str) -> str:
+        """XOR two binary strings of the same length.
+
+        Args:
+            a (str): string of 0s and 1s
+            b (str): string of 0s and 1s
+
+        Returns:
+            str: XORed string of 0s and 1s
+        """
         result =''
         for charA, charB in zip(a, b):
             if charA == charB:
@@ -20,13 +31,31 @@ class TextObfuscator():
                 result += '1'
         return result
 
-    def obfuscate(self, text):
+    def obfuscate(self, text, key=None) -> tuple[str, str]:
+        """Obfuscate text using XOR cipher. The key is generated using the GenerateKey class.
+        Text is first converted to binary string.
+        Then each character is XORed with a reversed segment of the key.
+        The segment is chosen based on the value of the key. If the value is even,
+        the key segment pointer increases by 1, else 2.
+        If the segment pointer is greater than the length of the key, it is set to 0.
+        Segments of key are also cobnverted to binary strings.
+
+        Args:
+            text (str): Message to obfuscate.
+            key (str, optional): Key to use for obfuscation. Defaults to None.
+
+        Returns:
+            tuple[str, str]: Returns a tuple of obfuscated message and the key used.
+        """
         bin_message = self.__char_encoder.string_to_bits(text)
         coded_message = ''
         segment_pointer = 0
         message_pointer = 0
         offset = 0
-        self.__key: str = next(self.__key_generator)
+        if key is None:
+            self.__key: str = next(self.__key_generator)
+        else:
+            self.__key: str = key
         key_binary: List[str] = self.__char_encoder.string_to_bits(self.__key)
         key_nums: list[int] = [int(char, 16) for char in self.__key]
         while True:
@@ -89,7 +118,7 @@ if __name__ == "__main__":
     # print(to.obfuscate('test'))
     # for i in range(10):
     #     print(to.obfuscate('Co tam u ciebie Adamie? Bo u mnie świetnie'))
-    mess, key = to.obfuscate('Co tam u ciebie \n\nAdamie? Bo u mnie świetnie')
+    mess, key = to.obfuscate('Co tam u ciebie   Adamie? Bo u mnie świetnie')
     print(mess, key)
     print(to.coded_message_to_string(mess))
     print(to.deobfuscate(mess, key))
