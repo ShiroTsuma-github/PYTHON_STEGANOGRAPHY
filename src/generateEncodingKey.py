@@ -1,5 +1,6 @@
 from key_generator.key_generator import generate
 import time
+from random import randint
 
 
 class GenerateKey():
@@ -24,7 +25,7 @@ class GenerateKey():
         return key_schema
 
     def __next__(self) -> str:
-        self.__seed -= 100
+        self.__seed -= randint(1, 100)
         self.__key = self.__generate_key()
         return self.__key
 
