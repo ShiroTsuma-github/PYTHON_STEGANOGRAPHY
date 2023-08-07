@@ -5,7 +5,7 @@ from generateEncodingKey import GenerateKey
 import os
 from PIL import Image
 gk = GenerateKey(36, 'hex')
-ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
+ROOT_DIR: str = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 
 
 class Button_Frame(customtkinter.CTkFrame):

@@ -5,3 +5,4 @@ key-generator
 pytest-cov
 pytest-html
 customtkinter
+jellyfish
