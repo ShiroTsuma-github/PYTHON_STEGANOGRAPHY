@@ -1,6 +1,11 @@
 from typing import List
-from encodeChars import EncodeDecodeChars
-from generateEncodingKey import GenerateKey
+import sys
+import os
+
+ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(ROOT_DIR)
+from src.encodeChars import EncodeDecodeChars       # noqa: E402
+from src.generateEncodingKey import GenerateKey     # noqa: E402
 
 
 class TextObfuscator():
@@ -12,6 +17,7 @@ class TextObfuscator():
         self.__key_generator = GenerateKey(key_length, key_format)
         self.__char_encoder = EncodeDecodeChars(char_dict_path)
         self.__key = next(self.__key_generator)
+        self.char_length = self.__char_encoder.BITS_USED
 
     def __xor(self, a: str, b: str) -> str:
         """XOR two binary strings of the same length.
@@ -23,13 +29,18 @@ class TextObfuscator():
         Returns:
             str: XORed string of 0s and 1s
         """
-        result =''
+        result = ''
         for charA, charB in zip(a, b):
             if charA == charB:
                 result += '0'
             else:
                 result += '1'
         return result
+
+    def __xor_list(self, char: str, key: list[str]) -> str:
+        for charKey in key:
+            char = self.__xor(char, charKey)
+        return char
 
     def obfuscate(self, text, key=None) -> tuple[str, str]:
         """Obfuscate text using XOR cipher. The key is generated using the GenerateKey class.
@@ -51,59 +62,49 @@ class TextObfuscator():
         coded_message = ''
         segment_pointer = 0
         message_pointer = 0
-        offset = 0
         if key is None:
             self.__key: str = next(self.__key_generator)
         else:
             self.__key: str = key
-        key_binary: List[str] = self.__char_encoder.string_to_bits(self.__key)
-        key_nums: list[int] = [int(char, 16) for char in self.__key]
+        key_binary: List[str] = list(reversed(self.__char_encoder.string_to_bits(self.__key)))
         while True:
-            coded_char: str = self.__xor(bin_message[message_pointer], reversed(key_binary[segment_pointer]))
+            coded_char: str = self.__xor_list(bin_message[message_pointer], reversed(key_binary[segment_pointer:]))
             coded_message += coded_char
-            if key_nums[segment_pointer] % 2 == 0:
-                offset = 1
-            else:
-                offset = 2
-            if segment_pointer + offset >= len(key_nums):
-                segment_pointer = 0
             message_pointer += 1
-            segment_pointer += 1
-            if segment_pointer >= len(key_nums):
+            if segment_pointer + 1 >= len(key_binary):
                 segment_pointer = 0
+            else:
+                segment_pointer += 1
             if message_pointer >= len(text):
                 break
         return (coded_message, self.__key)
 
     def deobfuscate(self, coded_message, key):
-        bin_message = [coded_message[i:i+self.__char_encoder.BITS_USED]\
+        bin_message = [coded_message[i:i + self.__char_encoder.BITS_USED]
                        for i in range(0, len(coded_message), self.__char_encoder.BITS_USED)]
         decoded_message = ''
-        segment_pointer = 0
         message_pointer = 0
-        offset = 0
-        key_binary: List[str] = self.__char_encoder.string_to_bits(key)
-        key_nums: list[int] = [int(char, 16) for char in key]
+        segment_pointer = 0
+        key_binary: List[str] = list(reversed(self.__char_encoder.string_to_bits(key)))
         while True:
-            decoded_char: str = self.__xor(bin_message[message_pointer], reversed(key_binary[segment_pointer]))
-            decoded_message += self.__char_encoder.bits_to_char(decoded_char)
-            if key_nums[segment_pointer] % 2 == 0:
-                offset = 1
-            else:
-                offset = 2
-            if segment_pointer + offset >= len(key_nums):
-                segment_pointer = 0
+            decoded_char: str = self.__xor_list(bin_message[message_pointer], reversed(key_binary[segment_pointer:]))
+            try:
+                decoded_message += self.__char_encoder.bits_to_char(decoded_char)
+            except ValueError:
+                decoded_message += ' '
             message_pointer += 1
-            segment_pointer += 1
-            if segment_pointer >= len(key_nums):
+            if segment_pointer + 1 >= len(key_binary):
                 segment_pointer = 0
+            else:
+                segment_pointer += 1
             if message_pointer >= len(bin_message):
                 break
         return decoded_message
 
     def coded_message_to_string(self, coded_message):
-        bin_message = [coded_message[i:i+self.__char_encoder.BITS_USED]\
-                       for i in range(0, len(coded_message), self.__char_encoder.BITS_USED)]
+        bin_message = [coded_message[
+            i:i + self.__char_encoder.BITS_USED]
+            for i in range(0, len(coded_message), self.__char_encoder.BITS_USED)]
         decoded_message = ''
         for char in bin_message:
             try:
@@ -115,12 +116,11 @@ class TextObfuscator():
 
 if __name__ == "__main__":
     to = TextObfuscator()
-    # print(to.obfuscate('test'))
-    # for i in range(10):
-    #     print(to.obfuscate('Co tam u ciebie Adamie? Bo u mnie świetnie'))
-    mess, key = to.obfuscate('Co tam u ciebie   Adamie? Bo u mnie świetnie')
+    mess, key = to.obfuscate('kkkkkkkkkkkkkk')
     print(mess, key)
     print(to.coded_message_to_string(mess))
     print(to.deobfuscate(mess, key))
-
-# '0110101 0100001 0110011 0110101'
+    mess, key = to.obfuscate('Adam co u ciebie?', '123')
+    print(mess, key)
+    print(to.coded_message_to_string(mess))
+    print(to.deobfuscate(mess, '123'))

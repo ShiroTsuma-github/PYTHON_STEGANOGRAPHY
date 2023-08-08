@@ -6,7 +6,7 @@ import os
 from PIL import Image
 from obfuscateText import TextObfuscator as txtobf
 gk = GenerateKey(36, 'hex')
-ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
+ROOT_DIR: str = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 
 
 class Button_Frame(customtkinter.CTkFrame):
