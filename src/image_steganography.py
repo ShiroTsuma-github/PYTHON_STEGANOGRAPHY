@@ -77,6 +77,37 @@ class image_stenographing():
             csvwriter = csv.writer(csvfile)
             csvwriter.writerows(updated_rows)
 
+    def update_row(self, selected, value):
+        selected = list(bin(selected))[2:]
+        selected[len(selected) - 1] = value
+        selected = str(int(''.join(selected), 2))
+        return selected
+
+    def enc2(self, key, filecsv, image, text):
+        cdmess, key = self.__get_coded_message(text=text, key=key)
+        gen = self.__csv_row_generator(filecsv)
+        self.__putting_pixels_value_into_file(image, filecsv)
+        cdmess = [cdmess[i:i+7] for i in range(0, len(cdmess), 7)]
+        cdmess = '0'.join(cdmess)
+        cdmess += '1'
+        length_of_key = len(key)
+        key = [int(x, 16) for x in key]
+        row_point = sum(key)
+        changed_values = {}
+        for i, item in enumerate(cdmess):
+            coding_value = (i + 1)**2 % length_of_key
+            row_value = next(self.__get_csv_row(gen, row_point))
+            selected_value = int(row_value[key[coding_value] % 3])
+            row_value[key[coding_value] % 3] = self.update_row(selected_value, cdmess[i])
+            changed_values.update({row_point: row_value})
+            row_point += key[coding_value]
+        self.__update_csv_value(filecsv, list(changed_values.keys()), list(changed_values.values()))
+        self.__create_image_from_csv(filecsv, f"{ROOT_DIR}/images/coded_image.png")
+        print(changed_values)
+            
+
+        
+
     def encode_image(self, key, filecsv, image, text):
         cdmess, key = self.__get_coded_message(text=text, key=key)
         gen = self.__csv_row_generator(filecsv)
@@ -96,7 +127,7 @@ class image_stenographing():
         for x in range(length_of_message-1):
             coding_value = (x + 1)**2
             row_value = next(self.__get_csv_row(gen, row_point))
-            one_of_rgb_value = int(row_value[int(key[coding_value % length_of_key]) % 3], 16)   
+            one_of_rgb_value = int(row_value[int(key[coding_value % length_of_key], 16) % 3], 16)   
             list.append(str(key[coding_value % length_of_key]))    
             if y % 8 == 0:
                 if y == length_of_message:
@@ -131,7 +162,7 @@ class image_stenographing():
                         else:
                             one_of_rgb_value += 1
                         which_lines.append(row_point)
-                        row_value[int(key[coding_value % length_of_key]) % 3] = str(one_of_rgb_value)
+                        row_value[int(key[coding_value % length_of_key], 16) % 3] = str(one_of_rgb_value)
                         what_value.append(row_value)
                 elif int(result[x]) == 1:
                     if one_of_rgb_value % 2 == 0:
@@ -145,7 +176,7 @@ class image_stenographing():
                         row_value[int(key[coding_value % length_of_key]) % 3] = str(one_of_rgb_value)
                         what_value.append(row_value)
             y += 1
-            row_point += int(key[coding_value % length_of_key])
+            row_point += int(key[coding_value % length_of_key],16)
         self.__update_csv_value(filecsv, which_lines, what_value)
         self.__create_image_from_csv(filecsv, f"{ROOT_DIR}/images/coded_image.png")
         print(list)
@@ -165,7 +196,6 @@ class image_stenographing():
             row_point += int(i, 16)
         while end == 0:
             coding_value = (x + 1)**2
-            row_value = next(self.__get_csv_row(gen, row_point))
             row_value = next(self.__get_csv_row(gen, row_point))
             one_of_rgb_value = int(row_value[int(key[coding_value % length_of_key]) % 3])
             list.append(str(key[coding_value % length_of_key]))
@@ -188,12 +218,18 @@ class image_stenographing():
 
 if __name__ == "__main__":
     to = image_stenographing()
-    to.encode_image(
-                    key="432412421",
-                    filecsv=f"{ROOT_DIR}/resources/precoded_pixels.csv",
-                    image=f"{ROOT_DIR}/images/png2.png",
-                    text="Random text"
-                    )
+    to.enc2(
+            key="432412421",
+            filecsv=f"{ROOT_DIR}/resources/precoded_pixels.csv",
+            image=f"{ROOT_DIR}/images/png2.png",
+            text="Ramadan"
+    )
+    # to.encode_image(
+    #                 key="432412421",
+    #                 filecsv=f"{ROOT_DIR}/resources/precoded_pixels.csv",
+    #                 image=f"{ROOT_DIR}/images/png2.png",
+    #                 text="Random text"
+    #                 )
     bin_value = to.decode_image(
                     key="432412421",
                     filecsv=f"{ROOT_DIR}/resources/plik.csv",
