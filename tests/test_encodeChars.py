@@ -96,7 +96,3 @@ def test_bits_to_string():
     with pytest.raises(ValueError):
         char_enc_dec.bits_to_string(["1111111"])
 
-
-# cov.stop()
-# cov.save()
-# cov.html_report(directory='coverage')
