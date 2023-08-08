@@ -4,6 +4,7 @@ import tkinter.filedialog
 from generateEncodingKey import GenerateKey
 import os
 from PIL import Image
+from obfuscateText import TextObfuscator as txtobf
 gk = GenerateKey(36, 'hex')
 ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 
@@ -18,12 +19,11 @@ class Button_Frame(customtkinter.CTkFrame):
         self.key_frame = Randomise_Space(self)
         self.key_frame.grid(row=2, column=0, padx=10, pady=(10, 0), sticky="nsew")
 
-    def encode_callback(self):
-        print("encode pressed")
-
     def decode_callback(self):
         print("decode pressed")
 
+    def encode_callback(self):
+        print("decode pressed")
 
 class Randomise_Space(customtkinter.CTkFrame):
     def __init__(self, master):
@@ -35,12 +35,15 @@ class Randomise_Space(customtkinter.CTkFrame):
         self.randomise_image = tk.PhotoImage(file=f"{ROOT_DIR}/resources/images/random.png",
                                              width=25,
                                              height=25)
-        self.randomise_button = customtkinter.CTkButton(self,
-                                                        text="",
-                                                        image=self.randomise_image,
-                                                        command=self.random_key_callback,
-                                                        width=30,
-                                                        height=self.key_input.cget("height"))
+        self.randomise_button = customtkinter.CTkButton(
+            self,
+            text="",
+            image=self.randomise_image,
+            command=self.random_key_callback,
+            width=30,
+            height=self.key_input.cget("height")
+            )
+        
         self.randomise_button.grid(row=0, column=1, padx=10, pady=10, sticky="nswe")
 
     def random_key_callback(self):
@@ -58,24 +61,11 @@ class InputOutputFrame(customtkinter.CTkFrame):
         self.input_field.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="nsew")
         self.output_field = customtkinter.CTkTextbox(self)
         self.output_field.grid(row=1, column=0, padx=10, pady=(10, 0), sticky="nsew")
+    
+    def getting_input(self): return self.input_field.get("1.0",END)
 
-
-class ImageFrameAndDropPoint(customtkinter.CTkFrame):
-    def __init__(self, master):
-        super().__init__(master)
-        stringvar = tk.StringVar()
-        stringvar.set('Drop here or drag from here!')
-        self.photo_image = customtkinter.CTkImage(Image.open(f"{ROOT_DIR}/resources/images/png1.png"), size=(370, 290))
-        self.image = customtkinter.CTkLabel(self.image_frame, text='', image=self.photo_image, textvar=stringvar)
-        self.image.grid(row=0, column=0, padx=(10, 0), pady=(10, 0), sticky="nsew")
-        self.image.register_drop_target("*")
-        self.image.bind("<<Drop>>", drop)
-
-    def drop(event):
-        stringvar.set(event.data)
-
-    def drag_command(event):
-        return (tkinterDnD.COPY, "DND_Text", "Some nice dropped text!")
+    def put_into_output(self, text): 
+        self.output_field.insert("1.0",text=text)
 
 class App(customtkinter.CTk):
     def __init__(self):
@@ -111,7 +101,6 @@ class App(customtkinter.CTk):
         self.image_frame.grid(row=0, column=0, padx=(0, 10), pady=(10, 0), sticky="nswe")
         self.button_choose_image.configure(text="")
         self.button_choose_image.image = self.photo_image
-        self.update()
 
 
 app = App()
