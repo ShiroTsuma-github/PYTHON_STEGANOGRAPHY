@@ -2,16 +2,20 @@ import customtkinter as ctk
 import tkinter as tk
 import tkinter.filedialog
 import tkinter.messagebox
+from tkinter.filedialog import asksaveasfile
 from PIL import Image
 import sys
 import os
+import random
+import string
 
 
 ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(ROOT_DIR)
-from src.generateEncodingKey import GenerateKey  # noqa: E402
-from src.obfuscateText import TextObfuscator  # noqa: E402
-from src.image_steganography import image_stenographing
+from src.generateEncodingKey import GenerateKey     # noqa: E402
+from src.obfuscateText import TextObfuscator        # noqa: E402
+from src.steganographImage import SteganoImage      # noqa: E402
+
 
 class ImageFrame(ctk.CTkFrame):
     def __init__(self, master) -> None:
@@ -96,8 +100,13 @@ class ButtonFrame(ctk.CTkFrame):
             return
         result, key = to.obfuscate(text, key)
 
-        ims = image_stenographing()
-        ims.encode_image(key, f"{ROOT_DIR}/resources/plik.csv", image_path, text)
+        steganograph = SteganoImage()
+        infile: str = tk.filedialog.asksaveasfile(
+            initialdir=f'{ROOT_DIR}/images',
+            title="Save as")
+        if not infile:
+            return
+        steganograph.encode(key, image_path, text, infile.name)
         self.master.clear_output()
         self.master.put_output('Binary:\n')
         self.master.put_output(result)
