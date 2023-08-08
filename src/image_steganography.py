@@ -42,7 +42,7 @@ class image_stenographing():
                 yield row
 
     def __get_csv_row(self, generator, target_row):
-        for i, row in enumerate(generator):
+        for i, row in enumerate(generator, start=1):
             if i == target_row:
                 return row
     
@@ -64,7 +64,7 @@ class image_stenographing():
         with open(file_path, 'r', newline='') as csvfile:
             csvreader = csv.reader(csvfile)
             position = 0
-            for i, row in enumerate(csvreader):
+            for i, row in enumerate(csvreader, start=1):
                 if i != row_position_table[position]:
                     updated_rows.append(row)
                 elif i == row_position_table[position]:
@@ -80,27 +80,25 @@ class image_stenographing():
         cdmess, key = self.__get_coded_message(text=text, key=key)
         gen = self.__csv_row_generator(filecsv)
         self.__putting_pixels_value_into_file(image, filecsv)
-        if len(cdmess) % 8 == 0:
-            chunked_cdmess = [cdmess[i:i+7] for i in range(0, len(cdmess), 8)]
-            result = ' '.join(chunked_cdmess)
-        else:  
-            chunked_cdmess = [cdmess[i:i+8] for i in range(0, len(cdmess), 8)]
-            result = ' '.join(chunked_cdmess)
-            result += ' '
+        chunked_cdmess = [cdmess[i:i+7] for i in range(0, len(cdmess), 7)]
+        result = ' '.join(chunked_cdmess)
+        print(result)
         length_of_key = len(key)
         length_of_message = len(result)
-        sum = 0
+        y = 1
+        list = []
+        row_point = 0
         for x in key:
-            sum += int(x)
-        row_point = sum 
+            row_point += int(x, 16)
         which_lines = []
         what_value = []
         for x in range(length_of_message-1):
+            coding_value = (x + 1)**2
             row_value = self.__get_csv_row(gen, row_point)
-            row_point += int(key[x % length_of_key])
-            one_of_rgb_value = int(row_value[int(key[x % length_of_key]) % 3])
-            if x % 9 == 0:
-                if x == length_of_message-1:
+            one_of_rgb_value = int(row_value[int(key[coding_value % length_of_key]) % 3])   
+            list.append(str(key[coding_value % length_of_key]))    
+            if y % 8 == 0:
+                if y == length_of_message:
                     if one_of_rgb_value % 2 == 0:
                         if one_of_rgb_value == 0:
                             one_of_rgb_value += 1
@@ -109,9 +107,9 @@ class image_stenographing():
                         else:
                             one_of_rgb_value += 1
                         which_lines.append(row_point)
-                        row_value[int(key[x % length_of_key]) % 3] = str(one_of_rgb_value)
+                        row_value[int(key[coding_value % length_of_key]) % 3] = str(one_of_rgb_value)
                         what_value.append(row_value)
-                elif x != length_of_message-1:
+                elif y != length_of_message:
                     if one_of_rgb_value % 2 == 1:
                         if one_of_rgb_value == 0:
                             one_of_rgb_value += 1
@@ -120,11 +118,10 @@ class image_stenographing():
                         else:
                             one_of_rgb_value += 1
                         which_lines.append(row_point)
-                        row_value[int(key[x % length_of_key]) % 3] = str(one_of_rgb_value)
+                        row_value[int(key[coding_value % length_of_key]) % 3] = str(one_of_rgb_value)
                         what_value.append(row_value) 
-
-            elif x % 9 != 0:
-                if int(cdmess[x]) == 0:
+            else:
+                if int(result[x]) == 0:
                     if one_of_rgb_value % 2 == 1:
                         if one_of_rgb_value == 0:
                             one_of_rgb_value += 1
@@ -133,9 +130,9 @@ class image_stenographing():
                         else:
                             one_of_rgb_value += 1
                         which_lines.append(row_point)
-                        row_value[int(key[x % length_of_key]) % 3] = str(one_of_rgb_value)
+                        row_value[int(key[coding_value % length_of_key]) % 3] = str(one_of_rgb_value)
                         what_value.append(row_value)
-                elif int(cdmess[x]) == 1:
+                elif int(result[x]) == 1:
                     if one_of_rgb_value % 2 == 0:
                         if one_of_rgb_value == 0:
                             one_of_rgb_value += 1
@@ -144,65 +141,47 @@ class image_stenographing():
                         else:
                             one_of_rgb_value += 1
                         which_lines.append(row_point)
-                        row_value[int(key[x % length_of_key]) % 3] = str(one_of_rgb_value)
+                        row_value[int(key[coding_value % length_of_key]) % 3] = str(one_of_rgb_value)
                         what_value.append(row_value)
+            y += 1
+            row_point += int(key[coding_value % length_of_key])
         self.__update_csv_value(filecsv, which_lines, what_value)
         self.__create_image_from_csv(filecsv, f"{ROOT_DIR}/resources/images/coded_image.png")
+        print(list)
 
-    # def decode_image(self, key, filecsv, image):
-    #     self.__putting_pixels_value_into_file(image, filecsv)
-    #     gen = self.__csv_row_generator(filecsv)
-    #     self.__putting_pixels_value_into_file(image, filecsv)
-    #     length_of_key = len(key)
-    #     bin_value = ''
-    #     sum = 0
-    #     for x in key:
-    #         sum += int(x)
-    #     row_point = sum
-    #     which_lines = []
-    #     what_value = []
-    #     for x in key:
-    #         row_value = self.__get_csv_row(gen, row_point)
-    #         row_point += int(x)
-    #         r_or_g_or_b = int(key[x % length_of_key]) % 3
-    #         if int(row_value[r_or_g_or_b]) % 2 == 0:
-    #             if one_of_rgb_value % 2 == 1:
-    #                 if one_of_rgb_value == 0:
-    #                     one_of_rgb_value += 1
-    #                     which_lines.append(row_point)
-    #                     row_value[int(key[x % length_of_key]) % 3] = str(one_of_rgb_value)
-    #                     what_value.append(row_value)
-    #                 elif one_of_rgb_value == 255:
-    #                     one_of_rgb_value -= 1
-    #                     which_lines.append(row_point)
-    #                     row_value[int(key[x % length_of_key]) % 3] = str(one_of_rgb_value)
-    #                     what_value.append(row_value)
-    #                 else:
-    #                     one_of_rgb_value += 1
-    #                     which_lines.append(row_point)
-    #                     row_value[int(key[x % length_of_key]) % 3] = str(one_of_rgb_value)
-    #                     what_value.append(row_value)
-    #         elif int(cdmess[x]) == 1:
-    #             if one_of_rgb_value % 2 == 0:
-    #                 if one_of_rgb_value == 0:
-    #                     one_of_rgb_value += 1
-    #                     which_lines.append(row_point)
-    #                     row_value[int(key[x % length_of_key]) % 3] = str(one_of_rgb_value)
-    #                     what_value.append(row_value)
-    #                 elif one_of_rgb_value == 255:
-    #                     one_of_rgb_value -= 1
-    #                     which_lines.append(row_point)
-    #                     row_value[int(key[x % length_of_key]) % 3] = str(one_of_rgb_value)
-    #                     what_value.append(row_value)
-    #                 else:
-    #                     one_of_rgb_value += 1
-    #                     which_lines.append(row_point)
-    #                     row_value[int(key[x % length_of_key]) % 3] = str(one_of_rgb_value)
-    #                     what_value.append(row_value)
-            
-    #     self.__update_csv_value(filecsv, which_lines, what_value)
-    #     self.__create_image_from_csv(filecsv, "coded_photo.png")
-        
+    def decode_image(self, key, filecsv, image):
+        self.__putting_pixels_value_into_file(image, filecsv)
+        gen = self.__csv_row_generator(filecsv)
+        length_of_key = len(key)
+        list = []
+        bin_value = ''
+        row_point = 0
+        coding_value = 0
+        x = 0
+        y = 1
+        end = 0
+        for i in key:
+            row_point += int(i, 16)
+        while end == 0:
+            coding_value = (x + 1)**2
+            row_value = self.__get_csv_row(gen, row_point)
+            one_of_rgb_value = int(row_value[int(key[coding_value % length_of_key]) % 3])
+            list.append(str(key[coding_value % length_of_key]))
+            if y % 8 == 0:
+                if one_of_rgb_value % 2 == 1:
+                    end = 1
+                else:
+                    bin_value += ' '
+            else:
+                if one_of_rgb_value % 2 == 0:
+                    bin_value += '0'
+                else:
+                    bin_value += '1'
+            row_point += int(key[coding_value % length_of_key])
+            y += 1
+            x += 1
+        print(list)
+        return bin_value
 
 
 if __name__ == "__main__":
@@ -210,11 +189,12 @@ if __name__ == "__main__":
     to.encode_image(
                     key="432412421",
                     filecsv=f"{ROOT_DIR}/resources/precoded_pixels.csv",
-                    image=f"{ROOT_DIR}/resources/images/png2.png", 
+                    image=f"{ROOT_DIR}/resources/images/png2.png",
                     text="Random text"
                     )
-    # to.decode_image(
-    #                 key="432412421", 
-    #                 filecsv="new_file.csv",
-    #                 image="coded_photo.png"
-    #                 )
+    bin_value = to.decode_image(
+                    key="432412421",
+                    filecsv=f"{ROOT_DIR}/resources/plik.csv",
+                    image=f"{ROOT_DIR}/resources/images/coded_image.png"
+                    )
+    print(bin_value)
