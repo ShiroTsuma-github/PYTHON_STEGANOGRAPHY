@@ -27,7 +27,7 @@ class ImageFrame(ctk.CTkFrame):
 
     def choose_img(self) -> None:
         infile: str = tk.filedialog.askopenfilename(
-            initialdir=f'{ROOT_DIR}/resources/images',
+            initialdir=f'{ROOT_DIR}/images',
             title="Select file")
         if not infile:
             return
