@@ -147,7 +147,7 @@ class image_stenographing():
             y += 1
             row_point += int(key[coding_value % length_of_key])
         self.__update_csv_value(filecsv, which_lines, what_value)
-        self.__create_image_from_csv(filecsv, f"{ROOT_DIR}/resources/images/coded_image.png")
+        self.__create_image_from_csv(filecsv, f"{ROOT_DIR}/images/coded_image.png")
         print(list)
 
     def decode_image(self, key, filecsv, image):
@@ -190,12 +190,12 @@ if __name__ == "__main__":
     to.encode_image(
                     key="432412421",
                     filecsv=f"{ROOT_DIR}/resources/precoded_pixels.csv",
-                    image=f"{ROOT_DIR}/resources/images/png2.png",
+                    image=f"{ROOT_DIR}/images/png2.png",
                     text="Random text"
                     )
     bin_value = to.decode_image(
                     key="432412421",
                     filecsv=f"{ROOT_DIR}/resources/plik.csv",
-                    image=f"{ROOT_DIR}/resources/images/coded_image.png"
+                    image=f"{ROOT_DIR}/images/coded_image.png"
                     )
     print(bin_value)
