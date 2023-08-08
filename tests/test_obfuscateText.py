@@ -32,7 +32,8 @@ def test_coded_message():
 
 def test_similiarity():
     to = TextObfuscator()
-    key_format_hex: list[str] = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f']
+    key_format_hex: list[str] = ['0', '1', '2', '3', '4', '5', '6', '7',
+                                 '8', '9', 'a', 'b', 'c', 'd', 'e', 'f']
     message = 'This is a test message'
     for __ in range(16):
         for i in range(16):

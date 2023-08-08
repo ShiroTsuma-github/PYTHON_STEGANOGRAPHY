@@ -17,6 +17,7 @@ class TextObfuscator():
         self.__key_generator = GenerateKey(key_length, key_format)
         self.__char_encoder = EncodeDecodeChars(char_dict_path)
         self.__key = next(self.__key_generator)
+        self.char_length = self.__char_encoder.BITS_USED
 
     def __xor(self, a: str, b: str) -> str:
         """XOR two binary strings of the same length.
