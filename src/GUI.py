@@ -1,7 +1,7 @@
-from typing import Optional, Tuple, Union
 import customtkinter as ctk
 import tkinter as tk
 import tkinter.filedialog
+import tkinter.messagebox
 from PIL import Image
 import sys
 import os
@@ -10,12 +10,14 @@ import os
 ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(ROOT_DIR)
 from src.generateEncodingKey import GenerateKey  # noqa: E402
+from src.obfuscateText import TextObfuscator  # noqa: E402
 
 
 class ImageFrame(ctk.CTkFrame):
     def __init__(self, master) -> None:
         super().__init__(master)
         self.image = None
+        self.image_path = None
         self.c_font = ("Impact", 16)
         self.btn_choose = ctk.CTkButton(self,
                                         height=70,
@@ -31,6 +33,7 @@ class ImageFrame(ctk.CTkFrame):
             title="Select file")
         if not infile:
             return
+        self.image_path = infile
         self.image = ctk.CTkImage(Image.open(infile), size=(350, 270))
         self.btn_choose.configure(image=self.image,
                                   height=370,
@@ -48,6 +51,9 @@ class ImageFrame(ctk.CTkFrame):
                                   hover=True,
                                   fg_color=('#3B8ED0', '#1F6AA5'))
         self.btn_choose.image = None
+
+    def get_image_path(self) -> str:
+        return self.image_path
 
 
 class ButtonFrame(ctk.CTkFrame):
@@ -75,7 +81,28 @@ class ButtonFrame(ctk.CTkFrame):
         self.key_frame.grid(row=3, column=0, padx=10, pady=(10, 0), sticky="nsew")
 
     def encode(self) -> None:
-        pass
+        to = TextObfuscator()
+        text: str = self.master.get_input()
+        key: str = self.key_input.get()
+        image_path = self.master.get_img()
+        if not key:
+            tk.messagebox.showerror("Error", "Please enter a key")
+            return
+        if text.isspace():
+            tk.messagebox.showerror("Error", "Please enter a message")
+            return
+        
+        if not image_path:
+            tk.messagebox.showerror("Error", "Please choose an image")
+            return
+        result, key = to.obfuscate(text, key)
+        self.master.clear_output()
+        self.master.put_output('Binary:\n')
+        self.master.put_output(result)
+        self.master.put_output('\nKey:\n')
+        self.master.put_output(key)
+        self.master.put_output('\nWithout Decoding:\n')
+        self.master.put_output(to.coded_message_to_string(result))
 
     def decode(self) -> None:
         pass
@@ -145,11 +172,14 @@ class DataFrame(ctk.CTkFrame):
         self.output_field = ctk.CTkTextbox(self, font=self.t_font)
         self.output_field.grid(row=1, column=0, padx=10, pady=(10, 0), sticky="nsew")
 
-    def getting_input(self):
+    def get_input(self):
         return self.input_field.get("1.0", tk.END)
 
     def put_into_output(self, text):
-        self.output_field.insert("1.0", text=text)
+        self.output_field.insert(tk.END, text=text)
+
+    def clear_output(self):
+        self.output_field.delete("1.0", tk.END)
 
 
 class AuthorsFrame(ctk.CTkFrame):
@@ -185,6 +215,18 @@ class App(ctk.CTk):
 
     def clear_image(self):
         self.image_frame.clear_img()
+
+    def get_input(self):
+        return self.data_frame.get_input()
+
+    def put_output(self, text):
+        self.data_frame.put_into_output(text)
+
+    def clear_output(self):
+        self.data_frame.clear_output()
+
+    def get_img(self):
+        return self.image_frame.get_image_path()
 
 
 if __name__ == "__main__":
