@@ -11,7 +11,7 @@ ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(ROOT_DIR)
 from src.generateEncodingKey import GenerateKey  # noqa: E402
 from src.obfuscateText import TextObfuscator  # noqa: E402
-
+from src.image_steganography import image_stenographing
 
 class ImageFrame(ctk.CTkFrame):
     def __init__(self, master) -> None:
@@ -96,6 +96,9 @@ class ButtonFrame(ctk.CTkFrame):
             tk.messagebox.showerror("Error", "Please choose an image")
             return
         result, key = to.obfuscate(text, key)
+
+        ims = image_stenographing()
+        ims.encode_image(key, f"{ROOT_DIR}/resources/plik.csv", image_path, text)
         self.master.clear_output()
         self.master.put_output('Binary:\n')
         self.master.put_output(result)

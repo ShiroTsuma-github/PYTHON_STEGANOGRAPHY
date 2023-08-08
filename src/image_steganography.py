@@ -46,7 +46,7 @@ class image_stenographing():
     def __get_csv_row(self, generator, target_row):
         for i, row in enumerate(generator, start=1):
             if i == target_row:
-                return row
+                yield row
     
     def __create_image_from_csv(self, csv_file_path, output_image_path):
         pixel_values = []
@@ -95,8 +95,8 @@ class image_stenographing():
         what_value = []
         for x in range(length_of_message-1):
             coding_value = (x + 1)**2
-            row_value = self.__get_csv_row(gen, row_point)
-            one_of_rgb_value = int(row_value[int(key[coding_value % length_of_key]) % 3])   
+            row_value = next(self.__get_csv_row(gen, row_point))
+            one_of_rgb_value = int(row_value[int(key[coding_value % length_of_key]) % 3], 16)   
             list.append(str(key[coding_value % length_of_key]))    
             if y % 8 == 0:
                 if y == length_of_message:
@@ -165,7 +165,7 @@ class image_stenographing():
             row_point += int(i, 16)
         while end == 0:
             coding_value = (x + 1)**2
-            row_value = self.__get_csv_row(gen, row_point)
+            row_value = next(self.__get_csv_row(gen, row_point))
             one_of_rgb_value = int(row_value[int(key[coding_value % length_of_key]) % 3])
             list.append(str(key[coding_value % length_of_key]))
             if y % 8 == 0:
@@ -178,7 +178,7 @@ class image_stenographing():
                     bin_value += '0'
                 else:
                     bin_value += '1'
-            row_point += int(key[coding_value % length_of_key])
+            row_point = int(key[coding_value % length_of_key])
             y += 1
             x += 1
         print(list)
