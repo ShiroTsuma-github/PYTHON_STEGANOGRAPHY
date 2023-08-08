@@ -166,6 +166,7 @@ class image_stenographing():
         while end == 0:
             coding_value = (x + 1)**2
             row_value = next(self.__get_csv_row(gen, row_point))
+            row_value = next(self.__get_csv_row(gen, row_point))
             one_of_rgb_value = int(row_value[int(key[coding_value % length_of_key]) % 3])
             list.append(str(key[coding_value % length_of_key]))
             if y % 8 == 0:

@@ -91,7 +91,6 @@ class ButtonFrame(ctk.CTkFrame):
         if text.isspace():
             tk.messagebox.showerror("Error", "Please enter a message")
             return
-        
         if not image_path:
             tk.messagebox.showerror("Error", "Please choose an image")
             return
