@@ -1,23 +1,25 @@
 import os
 from PIL import Image
 import csv
-from obfuscateText import TextObfuscator as txob
+import sys
 
 ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(ROOT_DIR)
+from src.obfuscateText import TextObfuscator as txob  # noqa: E402
 
 
 class image_stenographing():
-    Width = 0
-    Height = 0
-    Mode = ''
+    Width: int = 0
+    Height: int = 0
+    Mode: str = ''
 
     def __init__(self):
         self.obfs = txob()
 
-    def __get_coded_message(self, text, key):
+    def __get_coded_message(self, text, key) -> tuple[str, str]:
         return self.obfs.obfuscate(text=text, key=key)
 
-    def __putting_pixels_value_into_file(self, photo, filecsv):
+    def __putting_pixels_value_into_file(self, photo, filecsv) -> None:
         """Function responsible for putting RGB values of photo into csv file
 
         Args:
@@ -50,15 +52,14 @@ class image_stenographing():
         pixel_values = []
 
         with open(csv_file_path, 'r') as csvfile:
-            csvreader = csvfile.readlines()
-            for line in csvreader:
+            for line in csvfile.readlines():
                 values = line.strip().split(',')
                 pixel_values.append((int(values[0]), int(values[1]), int(values[2])))
 
         new_image = Image.new(Mode, (Width, Height))
         new_image.putdata(pixel_values)
         new_image.save(output_image_path)
-            
+
     def __update_csv_value(self, file_path, row_position_table, new_value_table):
         updated_rows = []
         with open(file_path, 'r', newline='') as csvfile:
@@ -69,7 +70,7 @@ class image_stenographing():
                     updated_rows.append(row)
                 elif i == row_position_table[position]:
                     updated_rows.append(new_value_table[position])
-                    if position < len(row_position_table)-1:
+                    if position < len(row_position_table) - 1:
                         position += 1
 
         with open(file_path, 'w', newline='') as csvfile:
