@@ -1,105 +1,193 @@
+from typing import Optional, Tuple, Union
+import customtkinter as ctk
 import tkinter as tk
 import tkinter.filedialog
+from PIL import Image
+import sys
 import os
-from PIL import ImageTk, Image
-import generateEncodingKey as gek
-from datetime import datetime
-key = gek.GenerateKey(36, 'hex')
+
 
 ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(ROOT_DIR)
+from src.generateEncodingKey import GenerateKey  # noqa: E402
 
 
-def encoding():
-    output_text_field.insert(tk.END, f'[{datetime.now().strftime("%H:%M:%S")}]: Image encoded\n')
-    output_text_field.insert(tk.END, input_text_field.get(1.0, tk.END))
+class ImageFrame(ctk.CTkFrame):
+    def __init__(self, master) -> None:
+        super().__init__(master)
+        self.image = None
+        self.c_font = ("Impact", 16)
+        self.btn_choose = ctk.CTkButton(self,
+                                        height=70,
+                                        text="Choose Image",
+                                        font=self.c_font,
+                                        command=self.choose_img)
+        self.btn_choose.grid(row=0, column=0, padx=(10, 0), pady=(10, 0), sticky="nswe")
+        self.btn_choose.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+
+    def choose_img(self) -> None:
+        infile: str = tk.filedialog.askopenfilename(
+            initialdir=f'{ROOT_DIR}/resources/images',
+            title="Select file")
+        if not infile:
+            return
+        self.image = ctk.CTkImage(Image.open(infile), size=(350, 270))
+        self.btn_choose.configure(image=self.image,
+                                  height=370,
+                                  width=290,
+                                  text="",
+                                  fg_color='transparent',
+                                  hover=False)
+        self.grid(row=0, column=0, padx=(0, 10), pady=(10, 0), sticky="nswe")
+        self.btn_choose.image = self.image
+
+    def clear_img(self):
+        self.btn_choose.configure(image=None,
+                                  height=70,
+                                  text="Choose Image",
+                                  hover=True,
+                                  fg_color=('#3B8ED0', '#1F6AA5'))
+        self.btn_choose.image = None
 
 
-def decoding():
-    tk.filedialog.askopenfilename(initialdir=ROOT_DIR, title="Select file")
-    output_text_field.delete(1.0, tk.END)
-    output_text_field.insert(tk.END, f'[{datetime.now().strftime("%H:%M:%S")}]: Image decoded\n')
-    output_text_field.insert(tk.END, f'Decoded text...\n')
+class ButtonFrame(ctk.CTkFrame):
+    def __init__(self, master) -> None:
+        super().__init__(master)
+        self.master = master
+        self.columnconfigure(0, weight=1)
+        self.b_font = ("Impact", 26)
+        self.t_font = ("Impact", 16)
+        self.btn_encode = ctk.CTkButton(self,
+                                        text="Encode",
+                                        height=50,
+                                        font=self.b_font,
+                                        command=self.encode)
+        self.btn_encode.grid(row=0, column=0, padx=(10, 10), pady=(10, 0), sticky="nswe")
+        self.btn_decode = ctk.CTkButton(self,
+                                        text="Decode",
+                                        height=50,
+                                        font=self.b_font,
+                                        command=self.decode)
+        self.btn_decode.grid(row=1, column=0, padx=(10, 10), pady=(10, 0), sticky="nswe")
+        self.key_input = ctk.CTkEntry(self, height=40, font=self.t_font)
+        self.key_input.grid(row=2, column=0, padx=10, pady=(10, 0), sticky="nsew")
+        self.key_frame = KeyFrame(self)
+        self.key_frame.grid(row=3, column=0, padx=10, pady=(10, 0), sticky="nsew")
+
+    def encode(self) -> None:
+        pass
+
+    def decode(self) -> None:
+        pass
 
 
-def getting_image():
-    print("Getting image...")
+class KeyFrame(ctk.CTkFrame):
+    def __init__(self, master) -> None:
+        super().__init__(master)
+        self.master = master
+        self.rowconfigure(0, weight=1)
+        self.key_gen = GenerateKey(format='hex', key_length=31)
+        self.img_random = ctk.CTkImage(
+            Image.open(f"{ROOT_DIR}/resources/images/random.png"),
+            size=(30, 30))
+        self.img_copy = ctk.CTkImage(
+            Image.open(f"{ROOT_DIR}/resources/images/copy.png"),
+            size=(25, 25))
+        self.img_clear = ctk.CTkImage(
+            Image.open(f"{ROOT_DIR}/resources/images/clear.png"),
+            size=(35, 35))
+        self.btn_clear = ctk.CTkButton(self,
+                                       text="",
+                                       image=self.img_clear,
+                                       width=75,
+                                       height=23,
+                                       command=self.clear)
+        self.btn_clear.grid(row=0, column=0, padx=(10, 5), pady=(10, 10), sticky="nsew")
+        self.btn_copy = ctk.CTkButton(self,
+                                      text="",
+                                      width=75,
+                                      height=23,
+                                      image=self.img_copy,
+                                      command=self.copy)
+        self.btn_copy.grid(row=0, column=1, padx=5, pady=(10, 10), sticky="nsew")
+        self.btn_generate = ctk.CTkButton(self,
+                                          text="",
+                                          image=self.img_random,
+                                          width=75,
+                                          height=23,
+                                          command=self.generate_key)
+        self.btn_generate.grid(row=0, column=2, padx=(5, 10), pady=(10, 10), sticky="nsew")
 
-def creating_encoded_key():
-    currentDateAndTime = datetime.now().strftime("%H:%M:%S")
-    key_crypting_text_field.delete(1.0, tk.END)
-    key_crypting_text_field.insert(tk.END, next(key))
-    # output_text_field.delete(1.0, tk.END)
-    output_text_field.insert(tk.END, f'[{currentDateAndTime}]: Key generated\n')
+    def generate_key(self) -> None:
+        key = next(self.key_gen)
+        self.master.key_input.delete(0, tk.END)
+        self.master.key_input.insert(0, key)
 
+    def clear(self) -> None:
+        self.master.key_input.delete(0, tk.END)
+        self.master.master.clear_image()
 
-root = tk.Tk()
-root.title("Stenography App")
-
-# Set the size of the window
-window_width = 700
-window_height = 640
-root.geometry(f"{window_width}x{window_height}")
-
-# Calculate the position of the window to center it on the screen
-screen_width = root.winfo_screenwidth()
-screen_height = root.winfo_screenheight()
-x_position = (screen_width - window_width) // 2
-y_position = (screen_height - window_height) // 2
-# Set the position of the window
-root.geometry(f"{window_width}x{window_height}+{x_position}+{y_position}")
-root.resizable(False, False)
-
-photo_frame = tk.LabelFrame(root, bd=3, relief=tk.GROOVE, width=400, height=300)
-photo_frame.grid(row=0, column=0, pady=5)
-
-buttons_frame = tk.LabelFrame(root, bd=3, relief=tk.GROOVE, width=400, height=300)
-buttons_frame.grid(row=0, column=1, pady=5)
-
-input_output_frame = tk.LabelFrame(root, bd=3, relief=tk.GROOVE, width=680, height=150)
-input_output_frame.grid(row=1, column=0, columnspan=2, padx=10, pady=5)
-
-encode_button = tk.Button(buttons_frame, text="Encode", command=encoding, width=38, height=4)
-encode_button.grid(row=0, column=0, pady=20, padx=5)
-
-decode_button = tk.Button(buttons_frame, text="Decode", command=decoding, width=38, height=4)
-decode_button.grid(row=1, column=0, pady=20, padx=5)
-
-
-frame_for_encryption_key = tk.LabelFrame(buttons_frame, bd=0, relief=tk.GROOVE,)
-frame_for_encryption_key.grid(row=2, column=0, padx=5, pady=10)
-
-label_for_crypting_key = tk.Label(frame_for_encryption_key, text="Encryption key: ")
-label_for_crypting_key.grid(row=2, column=0, columnspan=2)
-
-key_crypting_text_field = tk.Text(frame_for_encryption_key, width=30, height=2)
-key_crypting_text_field.grid(row=3, column=0, padx=5)
-
-image2 = Image.open(f"{ROOT_DIR}/resources/images/randomize.png")
-new_image2 = image2.resize((28, 28))
-test2 = ImageTk.PhotoImage(new_image2)
-
-creating_key_button = tk.Button(frame_for_encryption_key, width=28, height=28, image=test2, command=creating_encoded_key)
-creating_key_button.grid(row=3, column=1, padx=5)
-
-label_for_input_field = tk.Label(input_output_frame, text="Input data:")
-label_for_input_field.grid(row=0, padx=10, pady=2)
-
-input_text_field = tk.Text(input_output_frame, width=82, height=4)
-input_text_field.grid(row=1, padx=10, pady=5)
-
-label_for_output_field = tk.Label(input_output_frame, text="Output data:")
-label_for_output_field.grid(row=2, padx=10, pady=2)
-
-output_text_field = tk.Text(input_output_frame, width=82, height=10)
-output_text_field.grid(row=3, padx=10, pady=5)
-
-image1 = Image.open(f"{ROOT_DIR}/resources/images/png2.png")
-new_image = image1.resize((370, 290))
-test = ImageTk.PhotoImage(new_image)
-
-image_getting_button = tk.Button(photo_frame, image=test, command=getting_image)
-image_getting_button.grid(row=0, column=0, sticky="nsew")
+    def copy(self) -> None:
+        self.clipboard_clear()
+        self.clipboard_append(self.master.key_input.get())
 
 
+class DataFrame(ctk.CTkFrame):
+    def __init__(self, master):
+        super().__init__(master)
+        self.master = master
+        self.columnconfigure(0, weight=2)
+        self.rowconfigure(0, weight=5)
+        self.rowconfigure(1, weight=2)
+        self.t_font = ("Impact", 18)
+        self.input_field = ctk.CTkTextbox(self, font=self.t_font)
+        self.input_field.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="nsew")
+        self.output_field = ctk.CTkTextbox(self, font=self.t_font)
+        self.output_field.grid(row=1, column=0, padx=10, pady=(10, 0), sticky="nsew")
 
-root.mainloop()
+    def getting_input(self):
+        return self.input_field.get("1.0", tk.END)
+
+    def put_into_output(self, text):
+        self.output_field.insert("1.0", text=text)
+
+
+class AuthorsFrame(ctk.CTkFrame):
+    def __init__(self, master):
+        super().__init__(master)
+        self.master = master
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure(0, weight=1)
+        self.b_font = ("Impact", 18)
+        self.lbl_authors = ctk.CTkLabel(self,
+                                        text="Authors:\tTomasz Góralski\tHubert Przewoźniak",
+                                        font=self.b_font)
+        self.lbl_authors.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+
+
+class App(ctk.CTk):
+    def __init__(self):
+        super().__init__()
+        self.title("Steganography")
+        self.geometry("640x640")
+        self.resizable(False, False)
+        self.columnconfigure(1, weight=1)
+        self.rowconfigure(1, weight=2)
+
+        self.image_frame = ImageFrame(self)
+        self.image_frame.grid(row=0, column=0, padx=(0, 10),ipadx=65, pady=(10, 0), sticky="nswe")
+        self.button_frame = ButtonFrame(self)
+        self.button_frame.grid(row=0, column=1, padx=(0, 10), pady=(10, 0), sticky="nsew")
+        self.data_frame = DataFrame(self)
+        self.data_frame.grid(row=1, column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
+        self.authors_frame = AuthorsFrame(self)
+        self.authors_frame.grid(row=2, column=0, columnspan=2, padx=10, pady=5, sticky="nsew")
+
+    def clear_image(self):
+        self.image_frame.clear_img()
+
+
+if __name__ == "__main__":
+    app = App()
+    app.mainloop()
+

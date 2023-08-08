@@ -95,4 +95,3 @@ def test_bits_to_string():
         char_enc_dec.bits_to_string(["100001110"])
     with pytest.raises(ValueError):
         char_enc_dec.bits_to_string(["1111111"])
-

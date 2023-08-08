@@ -34,5 +34,3 @@ def test__next__():
         assert len(key) == 15
         assert key not in generated
         generated.append(key)
-
-
