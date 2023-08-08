@@ -1,12 +1,15 @@
 from key_generator.key_generator import generate
 import time
+from random import randint
 
 
 class GenerateKey():
-    """Generate a key for encoding and decoding data. The key is a string of numbers.
+    """Generate a key for encoding and decoding data.
+    The key is a string of numbers.
     The length of the key is set by the key_length parameter.
     The key is generated using the key_generator library.
     To get key you have to use next() method.
+    Possible formats of the key: `'int', 'hex', 'char'`
     """
     def __init__(self, key_length=32, format='int') -> None:
         self.key_length: int = key_length
@@ -22,7 +25,7 @@ class GenerateKey():
         return key_schema
 
     def __next__(self) -> str:
-        self.__seed -= 100
+        self.__seed -= randint(1, 100)
         self.__key = self.__generate_key()
         return self.__key
 

@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.filedialog
 import os
 from PIL import ImageTk, Image
 import generateEncodingKey as gek
@@ -14,6 +15,7 @@ def encoding():
 
 
 def decoding():
+    tk.filedialog.askopenfilename(initialdir=ROOT_DIR, title="Select file")
     output_text_field.delete(1.0, tk.END)
     output_text_field.insert(tk.END, f'[{datetime.now().strftime("%H:%M:%S")}]: Image decoded\n')
     output_text_field.insert(tk.END, f'Decoded text...\n')
@@ -29,7 +31,6 @@ def creating_encoded_key():
     # output_text_field.delete(1.0, tk.END)
     output_text_field.insert(tk.END, f'[{currentDateAndTime}]: Key generated\n')
 
-#def making_image_usable()
 
 root = tk.Tk()
 root.title("Stenography App")

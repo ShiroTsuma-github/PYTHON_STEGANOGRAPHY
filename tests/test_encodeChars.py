@@ -35,6 +35,7 @@ def test_char_to_bits():
     assert char_enc_dec.char_to_bits("a") == "1000011"
     assert char_enc_dec.char_to_bits("ą") == "1000100"
     assert char_enc_dec.char_to_bits("9") == "1101111"
+    assert char_enc_dec.char_to_bits("\n") == "1110000"
     with pytest.raises(ValueError):
         char_enc_dec.char_to_bits("as")
     with pytest.raises(ValueError):
@@ -55,8 +56,8 @@ def test_string_to_bits():
         '1100111', '1101110', '0000001']
     assert char_enc_dec.string_to_bits("aą9 ") ==\
         ["1000011", "1000100", "1101111", "0000000"]
-    assert char_enc_dec.string_to_bits("aą9 ą") ==\
-        ["1000011", "1000100", "1101111", "0000000", "1000100"]
+    assert char_enc_dec.string_to_bits("aą9 ą\n") ==\
+        ["1000011", "1000100", "1101111", "0000000", "1000100", "1110000"]
     with pytest.raises(ValueError):
         char_enc_dec.string_to_bits("as😊")
     with pytest.raises(ValueError):
