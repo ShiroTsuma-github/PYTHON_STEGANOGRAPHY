@@ -136,6 +136,7 @@ class SteganoImage():
         self.width = img.width
         self.height = img.height
         self.mode = img.mode
+        img = img.convert('RGB')
         bit_count = 0
         for i, item in enumerate(img.getdata()):
             coding_value = ((i + 1)**2) % length_of_key
