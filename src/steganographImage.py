@@ -6,6 +6,7 @@ import sys
 ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(ROOT_DIR)
 from src.obfuscateText import TextObfuscator as txob  # noqa: E402
+from funcy import print_durations
 
 
 class SteganoImage():
@@ -48,6 +49,7 @@ class SteganoImage():
             if i == target_row:
                 yield row
 
+
     def __create_image_from_csv(self, output_image_path):
         pixel_values = []
 
@@ -83,6 +85,76 @@ class SteganoImage():
         selected = str(int(''.join(selected), 2))
         return selected
 
+    @print_durations()
+    def quick_encode(self, key, image, text, output=None):
+        cdmess, key = self.__get_coded_message(text=text, key=key)
+        img = Image.open(image, 'r')
+        self.width = img.width
+        self.height = img.height
+        self.mode = img.mode
+        img = img.convert('RGB')
+        cdmess = [cdmess[i:i + 7] for i in range(0, len(cdmess), 7)]
+        cdmess = '0'.join(cdmess)
+        cdmess += '1'
+        length_of_mess = len(cdmess)
+        length_of_key = len(key)
+        key = [int(x, 16) for x in key]
+        row_point = sum(key)
+        result = []
+        mess_pointer = 0
+        finished = False
+        for i, item in enumerate(img.getdata()):
+            if finished:
+                end = list(img.getdata())[i:]
+                result.extend(end)
+                break
+            coding_value = ((i + 1)**2) % length_of_key
+            if i != row_point:
+                result.append(item)
+                continue
+            selected_value = int(item[key[coding_value] % 3])
+            row_data = list(item)
+            row_data[key[coding_value] % 3] = int(self.__update_row(selected_value, cdmess[mess_pointer]))
+            mess_pointer += 1
+            result.append(tuple(row_data))
+            if mess_pointer >= length_of_mess:
+                finished = True
+            row_point += key[coding_value] + 1
+
+        new_image = Image.new('RGB', (self.width, self.height))
+        new_image.putdata(result)
+        return new_image
+
+    @print_durations()
+    def quick_decode(self, key, image):
+        length_of_key = len(key)
+        bin_value = ''
+        key = [int(x, 16) for x in key]
+        row_point = sum(key)
+        i = 0
+        img = Image.open(image, 'r')
+        self.width = img.width
+        self.height = img.height
+        self.mode = img.mode
+        bit_count = 0
+        for i, item in enumerate(img.getdata()):
+            coding_value = ((i + 1)**2) % length_of_key
+            if i != row_point:
+                continue
+            selected_value = int(item[key[coding_value] % 3])
+            if (bit_count + 1) % 8 == 0:
+                if selected_value % 2 == 1:
+                    break
+                bit_count += 1
+                row_point += key[coding_value] + 1
+                continue
+            bit_count += 1
+            bin_value += str(selected_value % 2)
+            row_point += key[coding_value] + 1
+        return bin_value
+
+
+    @print_durations
     def encode(self, key, image, text, output=None):
         cdmess, key = self.__get_coded_message(text=text, key=key)
         gen = self.__csv_row_generator()
@@ -97,8 +169,6 @@ class SteganoImage():
         changed_values = []
         total = row_point
         for i, item in enumerate(cdmess):
-            if total >= 210:
-                print('', end='')
             coding_value = ((i + 1)**2) % length_of_key
             row_value = next(self.__get_csv_row(gen, row_point))
             selected_value = int(row_value[key[coding_value] % 3])
@@ -114,6 +184,7 @@ class SteganoImage():
             name = output
         self.__create_image_from_csv(name)
 
+    @print_durations
     def decode(self, key, image):
         self.__putting_pixels_value_into_file(image)
         gen = self.__csv_row_generator()
@@ -131,6 +202,7 @@ class SteganoImage():
                     break
                 i += 1
                 row_point = key[coding_value]
+                #  Chyba tu + 1, bo gdzie indziej tez tak jest
                 continue
             bin_value += str(selected_value % 2)
             row_point = key[coding_value] + 1
@@ -140,11 +212,15 @@ class SteganoImage():
 
 if __name__ == "__main__":
     to = SteganoImage()
-    to.encode(
+    to.quick_encode(
         key="334815546e588d1801dd1cc72b54958",
-        image=f"{ROOT_DIR}/images/png2.png",
-        text="R")
-    bin_value = to.decode(
+        image=f"{ROOT_DIR}/images/randomize.png",
+        text="Ola\nJa tu i ty")
+    # to.encode(
+    #     key="334815546e588d1801dd1cc72b54958",
+    #     image=f"{ROOT_DIR}/images/png2.png",
+    #     text="R")
+    bin_value = to.quick_decode(
         key="334815546e588d1801dd1cc72b54958",
         image=f"{ROOT_DIR}/images/coded_image.png")
     print(bin_value)
@@ -152,7 +228,7 @@ if __name__ == "__main__":
     to.encode(
         key="334815546e588d1801dd1cc72b54958",
         image=f"{ROOT_DIR}/images/png2.png",
-        text="Ale to zjebane")
+        text="Ola\nJa tu i ty")
     bin_value = to.decode(
         key="334815546e588d1801dd1cc72b54958",
         image=f"{ROOT_DIR}/images/coded_image.png")

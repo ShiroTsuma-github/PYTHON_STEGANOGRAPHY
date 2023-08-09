@@ -2,7 +2,7 @@ import customtkinter as ctk
 import tkinter as tk
 import tkinter.filedialog
 import tkinter.messagebox
-from tkinter.filedialog import asksaveasfile
+from tkinter.filedialog import asksaveasfilename
 from PIL import Image
 import sys
 import os
@@ -99,15 +99,25 @@ class ButtonFrame(ctk.CTkFrame):
             tk.messagebox.showerror("Error", "Please choose an image")
             return
         result, key = to.obfuscate(text, key)
+        self.master.clear_output()
+        self.master.put_output('Loading data: 100%\n')
+        self.master.put_output('Obfuscating: 100%\n')
 
         steganograph = SteganoImage()
-        infile: str = tk.filedialog.asksaveasfile(
+        data = [("Image Files", "*.png *.jpg")]
+        infile: str = tk.filedialog.asksaveasfilename(
+            filetypes=data,
+            defaultextension=data,
             initialdir=f'{ROOT_DIR}/images',
             title="Save as")
-        if not infile:
+        if infile:
+            image = steganograph.quick_encode(key, image_path, text)
+            image.save(infile)
+            self.master.put_output('Encoding: 100%\n')
+        else:
+            tk.messagebox.showerror("Error", "File not saved")
+            self.master.put_output('Encoding: failed\n')
             return
-        steganograph.encode(key, image_path, text, infile.name)
-        self.master.clear_output()
         self.master.put_output('Binary:\n')
         self.master.put_output(result)
         self.master.put_output('\nKey:\n')
@@ -116,7 +126,25 @@ class ButtonFrame(ctk.CTkFrame):
         self.master.put_output(to.coded_message_to_string(result))
 
     def decode(self) -> None:
-        pass
+        to = TextObfuscator()
+        key: str = self.key_input.get()
+        image_path = self.master.get_img()
+        if not key:
+            tk.messagebox.showerror("Error", "Please enter a key")
+            return
+        if not image_path:
+            tk.messagebox.showerror("Error", "Please choose an image")
+            return
+        steganograph = SteganoImage()
+        result_bin = steganograph.quick_decode(key, image_path)
+        self.master.clear_output()
+        self.master.put_output('Loading data: 100%\n')
+        self.master.put_output('Deobfuscating: 100%\n')
+        self.master.put_output('Binary:\n')
+        self.master.put_output(result_bin)
+        answer = to.deobfuscate(result_bin, key)
+        self.master.put_output('\nMessage:\n')
+        self.master.put_output(answer)
 
 
 class KeyFrame(ctk.CTkFrame):
