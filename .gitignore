@@ -4,3 +4,7 @@ launch.json
 __pycache__/
 *.pyc
 .coverage
+debug.log
+file_version_info.txt
+build/
+Steganograph.spec

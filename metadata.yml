@@ -1,0 +1,11 @@
+Version: 1.0.0.0
+FileDescription: App that takes image and encodes secret message inside
+InternalName: Steganography
+LegalCopyright: © Tomasz Góralski, Hubert Przewoźniak. All rights reserved.
+OriginalFilename: Steganograph.exe
+ProductName: Steganography
+Translation:
+  - langID: 0
+    charsetID: 1200
+  - langID: 1033
+    charsetID: 1252
