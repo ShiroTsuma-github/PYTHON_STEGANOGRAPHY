@@ -22,7 +22,7 @@ Our objective was to create interesting solution for hiding messages that noone 
 message you want to hide is coded 2 times. Firstly, app is coding your message as different characters, then it's coded in image.
 
 
-.. image:: clear_app.png
+.. image:: /resources/images/clear_app.png
    :alt: Steganography Image
 
 Usage
@@ -61,12 +61,12 @@ Examples
 
 Coding message "I love programming" in image with png extension with auto generated key 
 
-.. image:: encoding_example.png
+.. image:: /resources/images/encoding_example.png
    :alt: Example1
 
 Decoding message "I love programming" from coded image with png extension with earlier generated key
 
-.. image:: decoding_example.png
+.. image:: /resources/images/decoding_example.png
    :alt: Example2
 
 License
