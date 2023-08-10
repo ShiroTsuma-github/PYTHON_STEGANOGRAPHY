@@ -72,3 +72,5 @@ Decoding message "I love programming" from coded image with png extension with e
 License
 -------
 
+© Tomasz Góralski, Hubert Przewoźniak. All rights reserved.
+
