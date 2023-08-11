@@ -12,3 +12,4 @@ Steganograph.spec
 config.json
 coverage/*
 settings.json
+report.html
