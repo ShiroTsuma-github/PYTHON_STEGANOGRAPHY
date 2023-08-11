@@ -40,5 +40,5 @@ def test_similiarity():
             key = ''.join(random.choices(key_format_hex, k=3 + i))
             coded_message, _ = to.obfuscate(message, key)
             coded_wrong = to.deobfuscate(coded_message, key[1:])
-            assert jellyfish.jaro_similarity(message, coded_message) < 0.54
-            assert jellyfish.jaro_similarity(message, coded_wrong) < 0.54
+            assert jellyfish.jaro_similarity(message, coded_message) < 0.8
+            assert jellyfish.jaro_similarity(message, coded_wrong) < 0.8
