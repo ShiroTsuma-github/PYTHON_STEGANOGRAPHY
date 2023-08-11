@@ -14,13 +14,11 @@ Table of Contests
 - Examples
 - License
 
-
 Getting Started 
 ---------------
 
 Our objective was to create interesting solution for hiding messages that noone is able to see. Interesting about this project is a implementation, 
 message you want to hide is coded 2 times. Firstly, app is coding your message as different characters, then it's coded in image.
-
 
 .. image:: /resources/images/clear_app.png
    :alt: Steganography Image
@@ -42,7 +40,7 @@ With this app you can:
    - saving message only in image with .png ( with no transperency ) extension, jpg and jpeg are non lossless format so using them is pointless
    - generate coding key which is 31 bit long and have hexadecimal numbers or try your own key ( minimum 10 bit lengh, less than that can produce errors ) 
    - all of options above are packed into one minimalistic window application which is nice for your eye
-   - only one .exe file is needed for application working correctly 
+   - only one .exe 
 
 Installation
 ------------

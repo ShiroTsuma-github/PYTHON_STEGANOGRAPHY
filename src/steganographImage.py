@@ -20,11 +20,6 @@ class SteganoImage():
         return self.obfs.obfuscate(text=text, key=key)
 
     def __putting_pixels_value_into_file(self, photo) -> None:
-        """Function responsible for putting RGB values of photo into csv file
-
-        Args:
-            photo (str): string path to chosen photo
-        """
         img = Image.open(photo, 'r')
         self.width = img.width
         self.height = img.height
@@ -39,7 +34,7 @@ class SteganoImage():
         with open(f'{ROOT_DIR}/resources/temp.csv', 'r', newline='') as csvfile:
             csvreader = csv.reader(csvfile)
             for row in csvreader:
-                total +=1
+                total += 1
                 yield row
 
     def __get_csv_row(self, generator, target_row):
@@ -48,7 +43,6 @@ class SteganoImage():
             total += 1
             if i == target_row:
                 yield row
-
 
     def __create_image_from_csv(self, output_image_path):
         pixel_values = []
@@ -85,7 +79,6 @@ class SteganoImage():
         selected = str(int(''.join(selected), 2))
         return selected
 
-    @print_durations()
     def quick_encode(self, key, image, text, output=None):
         cdmess, key = self.__get_coded_message(text=text, key=key)
         img = Image.open(image, 'r')
@@ -125,7 +118,6 @@ class SteganoImage():
         new_image.putdata(result)
         return new_image
 
-    @print_durations()
     def quick_decode(self, key, image):
         length_of_key = len(key)
         bin_value = ''
@@ -154,8 +146,6 @@ class SteganoImage():
             row_point += key[coding_value] + 1
         return bin_value
 
-
-    @print_durations
     def encode(self, key, image, text, output=None):
         cdmess, key = self.__get_coded_message(text=text, key=key)
         gen = self.__csv_row_generator()
@@ -185,7 +175,6 @@ class SteganoImage():
             name = output
         self.__create_image_from_csv(name)
 
-    @print_durations
     def decode(self, key, image):
         self.__putting_pixels_value_into_file(image)
         gen = self.__csv_row_generator()
@@ -202,8 +191,7 @@ class SteganoImage():
                 if selected_value % 2 == 1:
                     break
                 i += 1
-                row_point = key[coding_value]
-                #  Chyba tu + 1, bo gdzie indziej tez tak jest
+                row_point = key[coding_value] + 1
                 continue
             bin_value += str(selected_value % 2)
             row_point = key[coding_value] + 1
@@ -213,24 +201,24 @@ class SteganoImage():
 
 if __name__ == "__main__":
     to = SteganoImage()
-    to.quick_encode(
-        key="334815546e588d1801dd1cc72b54958",
-        image=f"{ROOT_DIR}/images/randomize.png",
-        text="Ola\nJa tu i ty")
-    # to.encode(
+    # to.quick_encode(
     #     key="334815546e588d1801dd1cc72b54958",
-    #     image=f"{ROOT_DIR}/images/png2.png",
-    #     text="R")
-    bin_value = to.quick_decode(
-        key="334815546e588d1801dd1cc72b54958",
-        image=f"{ROOT_DIR}/images/coded_image.png")
-    print(bin_value)
-    print('\n')
+    #     image=f"{ROOT_DIR}/images/PNGexample2.png",
+    #     text="Ola\nJa tu i ty")
+
     to.encode(
         key="334815546e588d1801dd1cc72b54958",
-        image=f"{ROOT_DIR}/images/png2.png",
-        text="Ola\nJa tu i ty")
+        image=f"{ROOT_DIR}/resources/images/random.png",
+        text="Robert kubica", 
+        output="D:/encoded_files.png"
+        )
+    # bin_value = to.quick_decode(
+    #     key="334815546e588d1801dd1cc72b54958",
+    #     image=f"{ROOT_DIR}/images/coded_image.png")
+    # print(bin_value)
+    # print('\n')
+
     bin_value = to.decode(
         key="334815546e588d1801dd1cc72b54958",
-        image=f"{ROOT_DIR}/images/coded_image.png")
+        image="D:/encoded_files.png")
     print(bin_value)
