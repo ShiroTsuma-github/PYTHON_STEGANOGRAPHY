@@ -14,10 +14,18 @@ class TextObfuscator():
                  key_length: int = 36,
                  key_format: str = 'hex',
                  char_dict_path: str = 'charPolish.json'):
+        """Text obfuscator using `EncodeDecodeChars` and  ` GenerateKey`
+
+        Args:
+            key_length (int, optional): Key length forwarded to GenerateKey. Defaults to 36.
+            key_format (str, optional): `'int', 'hex', 'char'`. Defaults to 'hex'.
+            char_dict_path (str, optional): Character dictionary from `resources`. Defaults to 'charPolish.json'.
+        """
         self.__key_generator = GenerateKey(key_length, key_format)
         self.__char_encoder = EncodeDecodeChars(char_dict_path)
         self.__key = next(self.__key_generator)
         self.char_length = self.__char_encoder.BITS_USED
+        """Exposing of BITS_USED"""
 
     def __xor(self, a: str, b: str) -> str:
         """XOR two binary strings of the same length.

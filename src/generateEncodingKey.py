@@ -13,8 +13,18 @@ class GenerateKey():
     """
 
     def __init__(self, key_length=32, format='int') -> None:
+        """After creation and passing arguments you invoke next key generation,
+        by using `next(Class)`
+
+        Args:
+            key_length (int, optional): Lenght of key to generate. Defaults to 32.
+            format (str, optional): Format of key. Valid `'int', 'hex', 'char'`.
+              Defaults to 'int'.
+        """
         self.key_length: int = key_length
+        """Length of key"""
         self.format: str = format
+        """Format of key"""
         self.__seed: int = int(time.time())
         self.__key: str = self.__generate_key()
 

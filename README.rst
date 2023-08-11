@@ -17,7 +17,7 @@ Table of Contests
 Getting Started 
 ---------------
 
-Our objective was to create interesting solution for hiding messages that noone is able to see. Interesting about this project is a implementation, 
+Our objective was to create interesting solution for hiding messages that no one is able to see. Interesting about this project is a implementation, 
 message you want to hide is coded 2 times. Firstly, app is coding your message as different characters, then it's coded in image.
 
 .. image:: /resources/images/clear_app.png
@@ -38,14 +38,15 @@ With this app you can:
    - hide message which include all special characters you have on keyboard and all letters in polish language
    - hide message up to 1000 characters for image with 100 x 100 resolution
    - saving message only in image with .png ( with no transperency ) extension, jpg and jpeg are non lossless format so using them is pointless
-   - generate coding key which is 31 bit long and have hexadecimal numbers or try your own key ( minimum 10 bit lengh, less than that can produce errors ) 
+   - generate coding key which is 31 character long and have hexadecimal numbers or try your own key ( minimum 10 char length, less than that can produce errors ) 
    - all of options above are packed into one minimalistic window application which is nice for your eye
    - only one .exe 
 
 Installation
 ------------
 
-To use this steganography tool, you will need to have Python 3 installed on your system. Clone this repository and install the required dependencies 
+To use this steganography tool, you will need to have Python 3 installed on your system in case of running main.py. .exe is provided in dist and it doesn't need anything.
+Clone this repository and install the required dependencies 
 using the following commands:
 
 .. code-block:: bash

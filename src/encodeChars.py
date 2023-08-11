@@ -15,9 +15,13 @@ class EncodeDecodeChars:
         self.__raw_dict: dict = self.__load_json(
             f"{ROOT_DIR}/resources/{char_dict_path}")
         self.BITS_USED: int = self.__get_bits()
+        """ Informs how many bits are used by character dictionary to encode chars"""
         self.code_to_char: dict = self.__raw_dict.get("chars")
+        """ Dictionary with numbers and characters they represent"""
         self.char_to_code: dict = {v: k for k, v in self.code_to_char.items()}
+        """ Reverse. Maps characters to numbers for quicker access"""
         self.name: str = self.__raw_dict.get('charset')
+        """ Name of character charset"""
 
     def __repr__(self) -> str:
         return f"Character encoding {self.name}"

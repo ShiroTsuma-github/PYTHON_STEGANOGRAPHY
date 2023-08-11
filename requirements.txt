@@ -10,3 +10,4 @@ funcy
 auto-py-to-exe
 pyinstaller-versionfile
 deprecation
+pdoc
