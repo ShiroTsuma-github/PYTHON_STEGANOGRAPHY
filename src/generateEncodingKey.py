@@ -11,6 +11,7 @@ class GenerateKey():
     To get key you have to use next() method.
     Possible formats of the key: `'int', 'hex', 'char'`
     """
+
     def __init__(self, key_length=32, format='int') -> None:
         self.key_length: int = key_length
         self.format: str = format
@@ -31,8 +32,3 @@ class GenerateKey():
 
     def __iter__(self):
         raise NotImplementedError
-
-
-if __name__ == "__main__":
-    gen_key = GenerateKey()
-    print(next(gen_key))

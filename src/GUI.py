@@ -62,7 +62,8 @@ class ImageFrame(ctk.CTkFrame):
                                         text="Choose Image",
                                         font=self.c_font,
                                         command=self.choose_img)
-        self.btn_choose.grid(row=0, column=0, padx=(10, 0), pady=(10, 0), sticky="nswe")
+        self.btn_choose.grid(row=0, column=0, padx=(
+            10, 0), pady=(10, 0), sticky="nswe")
         self.btn_choose.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
     def choose_img(self) -> None:
@@ -117,17 +118,21 @@ class ButtonFrame(ctk.CTkFrame):
                                         height=50,
                                         font=self.b_font,
                                         command=self.encode)
-        self.btn_encode.grid(row=0, column=0, padx=(10, 10), pady=(10, 0), sticky="nswe")
+        self.btn_encode.grid(row=0, column=0, padx=(
+            10, 10), pady=(10, 0), sticky="nswe")
         self.btn_decode = ctk.CTkButton(self,
                                         text="Decode",
                                         height=50,
                                         font=self.b_font,
                                         command=self.decode)
-        self.btn_decode.grid(row=1, column=0, padx=(10, 10), pady=(10, 0), sticky="nswe")
+        self.btn_decode.grid(row=1, column=0, padx=(
+            10, 10), pady=(10, 0), sticky="nswe")
         self.key_input = ctk.CTkEntry(self, height=40, font=self.t_font)
-        self.key_input.grid(row=2, column=0, padx=10, pady=(10, 0), sticky="nsew")
+        self.key_input.grid(row=2, column=0, padx=10,
+                            pady=(10, 0), sticky="nsew")
         self.key_frame = KeyFrame(self)
-        self.key_frame.grid(row=3, column=0, padx=10, pady=(10, 0), sticky="nsew")
+        self.key_frame.grid(row=3, column=0, padx=10,
+                            pady=(10, 0), sticky="nsew")
 
     def encode(self) -> None:
         to = TextObfuscator()
@@ -138,7 +143,8 @@ class ButtonFrame(ctk.CTkFrame):
             tk.messagebox.showerror("Error", "Please enter a key")
             return
         if not all([i in '0123456789abcdef' for i in list(key)]):
-            tk.messagebox.showerror("Error", "Incorrect key format. (0123456789abcdef)")
+            tk.messagebox.showerror(
+                "Error", "Incorrect key format. (0123456789abcdef)")
             return
         if text.isspace():
             tk.messagebox.showerror("Error", "Please enter a message")
@@ -192,7 +198,8 @@ class ButtonFrame(ctk.CTkFrame):
             tk.messagebox.showerror("Error", "Please choose an image")
             return
         if not all([i in '0123456789abcdef' for i in list(key)]):
-            tk.messagebox.showerror("Error", "Incorrect key format. (0123456789abcdef)")
+            tk.messagebox.showerror(
+                "Error", "Incorrect key format. (0123456789abcdef)")
             return
         steganograph = SteganoImage()
         result_bin = steganograph.quick_decode(key, image_path)
@@ -204,7 +211,6 @@ class ButtonFrame(ctk.CTkFrame):
         answer = to.deobfuscate(result_bin, key)
         self.master.put_output('\nMessage:\n')
         self.master.put_output(answer)
-        
 
 
 class KeyFrame(ctk.CTkFrame):
@@ -228,21 +234,24 @@ class KeyFrame(ctk.CTkFrame):
                                        width=75,
                                        height=23,
                                        command=self.clear)
-        self.btn_clear.grid(row=0, column=0, padx=(10, 5), pady=(10, 10), sticky="nsew")
+        self.btn_clear.grid(row=0, column=0, padx=(10, 5),
+                            pady=(10, 10), sticky="nsew")
         self.btn_copy = ctk.CTkButton(self,
                                       text="",
                                       width=75,
                                       height=23,
                                       image=self.img_copy,
                                       command=self.copy)
-        self.btn_copy.grid(row=0, column=1, padx=5, pady=(10, 10), sticky="nsew")
+        self.btn_copy.grid(row=0, column=1, padx=5,
+                           pady=(10, 10), sticky="nsew")
         self.btn_generate = ctk.CTkButton(self,
                                           text="",
                                           image=self.img_random,
                                           width=75,
                                           height=23,
                                           command=self.generate_key)
-        self.btn_generate.grid(row=0, column=2, padx=(5, 10), pady=(10, 10), sticky="nsew")
+        self.btn_generate.grid(row=0, column=2, padx=(
+            5, 10), pady=(10, 10), sticky="nsew")
 
     def generate_key(self) -> None:
         key = next(self.key_gen)
@@ -268,9 +277,12 @@ class DataFrame(ctk.CTkFrame):
         self.rowconfigure(1, weight=2)
         self.t_font = ("Impact", 18)
         self.input_field = ctk.CTkTextbox(self, font=self.t_font)
-        self.input_field.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="nsew")
-        self.output_field = ctk.CTkTextbox(self, font=self.t_font, state='disabled')
-        self.output_field.grid(row=1, column=0, padx=10, pady=(10, 0), sticky="nsew")
+        self.input_field.grid(row=0, column=0, padx=10,
+                              pady=(10, 0), sticky="nsew")
+        self.output_field = ctk.CTkTextbox(
+            self, font=self.t_font, state='disabled')
+        self.output_field.grid(row=1, column=0, padx=10,
+                               pady=(10, 0), sticky="nsew")
 
     def get_input(self):
         return self.input_field.get("1.0", tk.END)
@@ -331,13 +343,17 @@ class App(ctk.CTk):
         self.rowconfigure(1, weight=2)
 
         self.image_frame = ImageFrame(self)
-        self.image_frame.grid(row=0, column=0, padx=(0, 10),ipadx=65, pady=(10, 0), sticky="nswe")
+        self.image_frame.grid(row=0, column=0, padx=(
+            0, 10), ipadx=65, pady=(10, 0), sticky="nswe")
         self.button_frame = ButtonFrame(self)
-        self.button_frame.grid(row=0, column=1, padx=(0, 10), pady=(10, 0), sticky="nsew")
+        self.button_frame.grid(row=0, column=1, padx=(
+            0, 10), pady=(10, 0), sticky="nsew")
         self.data_frame = DataFrame(self)
-        self.data_frame.grid(row=1, column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
+        self.data_frame.grid(row=1, column=0, columnspan=2,
+                             padx=10, pady=10, sticky="nsew")
         self.authors_frame = AuthorsFrame(self)
-        self.authors_frame.grid(row=2, column=0, columnspan=2, padx=10, pady=5, sticky="nsew")
+        self.authors_frame.grid(
+            row=2, column=0, columnspan=2, padx=10, pady=5, sticky="nsew")
 
     def clear_image(self):
         self.image_frame.clear_img()
@@ -359,9 +375,3 @@ class App(ctk.CTk):
 
     def toggle_output(self, state=None):
         self.data_frame.toggle_output(state)
-
-
-if __name__ == "__main__":
-    app = App()
-    app.mainloop()
-

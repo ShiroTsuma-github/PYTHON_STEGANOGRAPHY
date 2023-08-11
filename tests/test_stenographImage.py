@@ -2,7 +2,6 @@ import pytest
 import sys
 import os
 import os.path
-import time
 import csv
 from PIL import Image
 
@@ -33,7 +32,7 @@ def test_create_image_from_csv():
     si._SteganoImage__putting_pixels_value_into_file(f'{ROOT_DIR}/resources/images/random.png')
     si._SteganoImage__create_image_from_csv("D:/file.png")
     if_exist = os.path.isfile("D:/file.png")
-    assert if_exist == True
+    assert if_exist is True
 
 
 def test_encode_and_decode():
@@ -53,4 +52,3 @@ def test_encode_and_decode():
     bin_value = si.decode(key, "D:/encoded_files.png")
     uncoded_message = to.deobfuscate(bin_value, "14312")
     assert message != uncoded_message
-    

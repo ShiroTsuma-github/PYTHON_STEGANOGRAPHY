@@ -2,11 +2,11 @@ import os
 from PIL import Image
 import csv
 import sys
+import deprecation
 
 ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(ROOT_DIR)
 from src.obfuscateText import TextObfuscator as txob  # noqa: E402
-from funcy import print_durations
 
 
 class SteganoImage():
@@ -50,7 +50,8 @@ class SteganoImage():
         with open(f'{ROOT_DIR}/resources/temp.csv', 'r') as csvfile:
             for line in csvfile.readlines():
                 values = line.strip().split(',')
-                pixel_values.append((int(values[0]), int(values[1]), int(values[2])))
+                pixel_values.append(
+                    (int(values[0]), int(values[1]), int(values[2])))
 
         new_image = Image.new(self.mode, (self.width, self.height))
         new_image.putdata(pixel_values)
@@ -79,7 +80,18 @@ class SteganoImage():
         selected = str(int(''.join(selected), 2))
         return selected
 
-    def quick_encode(self, key, image, text, output=None):
+    def quick_encode(self, key, image, text) -> Image:
+        """
+        Encodes a text message into an image using a given key.
+
+        Args:
+            key (str): The key to be used for encoding.
+            image (str): The path to the image file.
+            text (str): The text message to be encoded.
+
+        Returns:
+            The encoded image.
+        """
         cdmess, key = self.__get_coded_message(text=text, key=key)
         img = Image.open(image, 'r')
         self.width = img.width
@@ -107,7 +119,8 @@ class SteganoImage():
                 continue
             selected_value = int(item[key[coding_value] % 3])
             row_data = list(item)
-            row_data[key[coding_value] % 3] = int(self.__update_row(selected_value, cdmess[mess_pointer]))
+            row_data[key[coding_value] % 3] = int(
+                self.__update_row(selected_value, cdmess[mess_pointer]))
             mess_pointer += 1
             result.append(tuple(row_data))
             if mess_pointer >= length_of_mess:
@@ -118,7 +131,17 @@ class SteganoImage():
         new_image.putdata(result)
         return new_image
 
-    def quick_decode(self, key, image):
+    def quick_decode(self, key, image) -> str:
+        """
+        Decodes a text message from an encoded image using a given key.
+
+        Args:
+            key (str): The key to be used for decoding.
+            image (str): The path to the encoded image file.
+
+        Returns:
+            The decoded text message.
+        """
         length_of_key = len(key)
         bin_value = ''
         key = [int(x, 16) for x in key]
@@ -146,6 +169,7 @@ class SteganoImage():
             row_point += key[coding_value] + 1
         return bin_value
 
+    @deprecation.deprecated(deprecated_in="1.0.0.0", details="For 4K it takes around 90s. Use quick_encode")
     def encode(self, key, image, text, output=None):
         cdmess, key = self.__get_coded_message(text=text, key=key)
         gen = self.__csv_row_generator()
@@ -163,7 +187,8 @@ class SteganoImage():
             coding_value = ((i + 1)**2) % length_of_key
             row_value = next(self.__get_csv_row(gen, row_point))
             selected_value = int(row_value[key[coding_value] % 3])
-            row_value[key[coding_value] % 3] = self.__update_row(selected_value, cdmess[i])
+            row_value[key[coding_value] % 3] = self.__update_row(
+                selected_value, cdmess[i])
             changed_indexes.append(total)
             changed_values.append(row_value)
             row_point = key[coding_value] + 1
@@ -175,6 +200,7 @@ class SteganoImage():
             name = output
         self.__create_image_from_csv(name)
 
+    @deprecation.deprecated(deprecated_in="1.0.0.0", details="For 4K it takes around 30s. Use quick_decode")
     def decode(self, key, image):
         self.__putting_pixels_value_into_file(image)
         gen = self.__csv_row_generator()
@@ -197,28 +223,3 @@ class SteganoImage():
             row_point = key[coding_value] + 1
             i += 1
         return bin_value
-
-
-if __name__ == "__main__":
-    to = SteganoImage()
-    # to.quick_encode(
-    #     key="334815546e588d1801dd1cc72b54958",
-    #     image=f"{ROOT_DIR}/images/PNGexample2.png",
-    #     text="Ola\nJa tu i ty")
-
-    to.encode(
-        key="334815546e588d1801dd1cc72b54958",
-        image=f"{ROOT_DIR}/resources/images/random.png",
-        text="Robert kubica", 
-        output="D:/encoded_files.png"
-        )
-    # bin_value = to.quick_decode(
-    #     key="334815546e588d1801dd1cc72b54958",
-    #     image=f"{ROOT_DIR}/images/coded_image.png")
-    # print(bin_value)
-    # print('\n')
-
-    bin_value = to.decode(
-        key="334815546e588d1801dd1cc72b54958",
-        image="D:/encoded_files.png")
-    print(bin_value)

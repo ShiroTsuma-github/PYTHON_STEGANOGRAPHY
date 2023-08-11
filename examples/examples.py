@@ -1,4 +1,5 @@
 import os
+from typing import List
 from PIL import Image
 import sys
 
@@ -15,14 +16,14 @@ if __name__ == "__main__":
     # to get key for encoding and decoding use:
     key = gk()
     print(next(key))
-  
+
     # encodeChars
     # Initialize the encoder
     encoder = ec()
 
     # Convert a string to binary
     input_text = "Hello World!"
-    encoded_bits = encoder.string_to_bits(input_text)
+    encoded_bits: List[str] = encoder.string_to_bits(input_text)
     print("Encoded bits:", encoded_bits)
 
     # Convert binary back to string
@@ -60,10 +61,11 @@ if __name__ == "__main__":
     print("Decoded Message:", decoded_message)
 
     # Example 3: Using the coded_message_to_string function
-    coded_message = ("101110011001010001000100101011100110010100101100110010000001011100011000100" + 
-    "11001100110011001000000101110011001010110011001101000011001010010110011001000010011001100110" + 
-    "01100110010001101000110001001100110011001100100010001100101001001100110100001101000110010100" + 
-    "1000000110010001100001")
+    coded_message = (
+        "101110011001010001000100101011100110010100101100110010000001011100011000100" + 
+        "11001100110011001000000101110011001010110011001101000011001010010110011001000010011001100110" + 
+        "01100110010001101000110001001100110011001100100010001100101001001100110100001101000110010100" + 
+        "1000000110010001100001")
     decoded_message = to.coded_message_to_string(coded_message)
     print("\nDecoded Message from Coded Message:", decoded_message)
 

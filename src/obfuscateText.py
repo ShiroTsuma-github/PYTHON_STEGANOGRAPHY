@@ -112,15 +112,3 @@ class TextObfuscator():
             except ValueError:
                 decoded_message += ' '
         return decoded_message
-
-
-if __name__ == "__main__":
-    to = TextObfuscator()
-    mess, key = to.obfuscate('kkkkkkkkkkkkkk')
-    print(mess, key)
-    print(to.coded_message_to_string(mess))
-    print(to.deobfuscate(mess, key))
-    mess, key = to.obfuscate('Adam co u ciebie?', '123')
-    print(mess, key)
-    print(to.coded_message_to_string(mess))
-    print(to.deobfuscate(mess, '123'))

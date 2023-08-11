@@ -10,8 +10,10 @@ class EncodeDecodeChars:
     """Class for encoding and decoding characters to and from binary strings
     of length based on char*.json.
     """
+
     def __init__(self, char_dict_path='charPolish.json'):
-        self.__raw_dict: dict = self.__load_json(f"{ROOT_DIR}/resources/{char_dict_path}")
+        self.__raw_dict: dict = self.__load_json(
+            f"{ROOT_DIR}/resources/{char_dict_path}")
         self.BITS_USED: int = self.__get_bits()
         self.code_to_char: dict = self.__raw_dict.get("chars")
         self.char_to_code: dict = {v: k for k, v in self.code_to_char.items()}
@@ -49,9 +51,11 @@ class EncodeDecodeChars:
         """
         if len(char) > 1:
             raise ValueError("Only single characters are allowed")
-        result: str = str(bin(int(self.char_to_code.get(char, -1)))).replace("0b", "")
+        result: str = str(
+            bin(int(self.char_to_code.get(char, -1)))).replace("0b", "")
         if result == "-1":
-            raise ValueError("Character not in dictionary. Change the dictionary or the character")
+            raise ValueError(
+                "Character not in dictionary. Change the dictionary or the character")
         padding: int = self.BITS_USED - len(result)
         return "0" * padding + result
 
@@ -65,10 +69,12 @@ class EncodeDecodeChars:
             str: Character represented by the binary string
         """
         if len(bits) != self.BITS_USED:
-            raise ValueError(f"Binary string must be of length {self.BITS_USED}")
+            raise ValueError(
+                f"Binary string must be of length {self.BITS_USED}")
         result: str = self.code_to_char.get(str(int(bits, 2)), -1)
         if result == -1:
-            raise ValueError("Bits outside of dictionary. Change the dictionary.")
+            raise ValueError(
+                "Bits outside of dictionary. Change the dictionary.")
         return result
 
     def string_to_bits(self, text: str) -> List[str]:
@@ -98,11 +104,3 @@ class EncodeDecodeChars:
         for bit in bits:
             result += self.bits_to_char(bit)
         return result
-
-
-if __name__ == "__main__":
-    encoder = EncodeDecodeChars()
-    print(encoder)
-    temp = encoder.string_to_bits("hEll0 WoR18!")
-    print(temp)
-    print(encoder.bits_to_string(temp))
