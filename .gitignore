@@ -10,4 +10,5 @@ build/
 Steganograph.spec
 .vscode/
 config.json
-report.html
+coverage/*
+settings.json
