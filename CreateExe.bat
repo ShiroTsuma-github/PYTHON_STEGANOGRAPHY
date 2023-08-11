@@ -1,0 +1,2 @@
+venv\Scripts\create-version-file.exe metadata.yml --outfile file_version_info.txt
+venv\Scripts\pyinstaller.exe --noconfirm --onefile --windowed --icon "E:/GitHub/PYTHON_STEGANOGRAPHY/resources/images/icon.ico" --name "Steganograph" --version-file "E:/GitHub/PYTHON_STEGANOGRAPHY/file_version_info.txt" --add-data "E:/GitHub/PYTHON_STEGANOGRAPHY/resources;resources/" --add-data "E:/GitHub/PYTHON_STEGANOGRAPHY/images;images/"  "E:/GitHub/PYTHON_STEGANOGRAPHY/main.py"
