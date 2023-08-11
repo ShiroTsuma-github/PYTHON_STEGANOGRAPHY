@@ -50,7 +50,7 @@ class TextObfuscator():
             char = self.__xor(char, charKey)
         return char
 
-    def obfuscate(self, text, key=None) -> tuple[str, str]:
+    def obfuscate(self, text: str, key=None) -> tuple[str, str]:
         """Obfuscate text using XOR cipher. The key is generated using the GenerateKey class.
         Text is first converted to binary string.
         Then each character is XORed with a reversed segment of the key.
@@ -87,7 +87,18 @@ class TextObfuscator():
                 break
         return (coded_message, self.__key)
 
-    def deobfuscate(self, coded_message, key):
+    def deobfuscate(self, coded_message: str, key: str) -> str:
+        """Deobfuscates binary string with same steps as when coding. It XORs with key
+        each segment of message and based on values of key it does
+        it from different point to get final result
+
+        Args:
+            coded_message (str): Binary string representing text
+            key (str): string of characters to use when XORing
+
+        Returns:
+            str: Result after decoding
+        """
         bin_message = [coded_message[i:i + self.__char_encoder.BITS_USED]
                        for i in range(0, len(coded_message), self.__char_encoder.BITS_USED)]
         decoded_message = ''
@@ -109,7 +120,16 @@ class TextObfuscator():
                 break
         return decoded_message
 
-    def coded_message_to_string(self, coded_message):
+    def coded_message_to_string(self, coded_message: str) -> str:
+        """Tries to display coded message without using key.
+        It just reads bits as they are
+
+        Args:
+            coded_message (str): Binary string representing encoded text
+
+        Returns:
+            str: Binary string converted to text
+        """
         bin_message = [coded_message[
             i:i + self.__char_encoder.BITS_USED]
             for i in range(0, len(coded_message), self.__char_encoder.BITS_USED)]
