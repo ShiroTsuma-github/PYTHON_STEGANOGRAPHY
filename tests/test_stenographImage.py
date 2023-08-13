@@ -36,6 +36,7 @@ def test_create_image_from_csv():
 
     os.remove(f'{ROOT_DIR}/resources/images/created.png')
 
+
 def test_encode_and_decode():
     si = SteganoImage()
     to = TextObfuscator()
@@ -48,6 +49,7 @@ def test_encode_and_decode():
     assert message != to.deobfuscate(bin_value, "14312")
 
     os.remove(f'{ROOT_DIR}/resources/images/encoded.png')
+
 
 def test__fast_encode_and_decode():
     si = SteganoImage()
