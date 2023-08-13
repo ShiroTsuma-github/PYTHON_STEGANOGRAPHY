@@ -17,9 +17,25 @@ class SteganoImage():
         self.mode: str = ''
 
     def __get_coded_message(self, text, key) -> tuple[str, str]:
+        """
+        Used for getting coded message and key used for 
+
+        Args:
+            text (str): Message that will be used for coding 
+            key (str): Key used for koding
+
+        Returns:
+            tuple[str, str]: Returns tuple that contains coded message and key
+        """
         return self.obfs.obfuscate(text=text, key=key)
 
     def __putting_pixels_value_into_file(self, photo) -> None:
+        """
+        Used for putting pixels value from image to csv file
+
+        Args:
+            photo (str): String path of which photo values will be extracted to csv file
+        """
         img = Image.open(photo, 'r')
         self.width = img.width
         self.height = img.height
@@ -38,6 +54,16 @@ class SteganoImage():
                 yield row
 
     def __get_csv_row(self, generator, target_row):
+        """
+        Used for getting targeted row from generator 
+
+        Args:
+            generator ( list(str) ): Generator from which we will be getting data
+            target_row ( int ): Which row will be returned
+
+        Yields:
+            tuple: Returns tuple of targeted row
+        """
         total = 0
         for i, row in enumerate(generator, start=1):
             total += 1
@@ -45,6 +71,12 @@ class SteganoImage():
                 yield row
 
     def __create_image_from_csv(self, output_image_path):
+        """
+        Used for creating new image from csv file where are rgb values 
+
+        Args:
+            output_image_path (str): The string path where image made from csv file will be saved
+        """
         pixel_values = []
 
         with open(f'{ROOT_DIR}/resources/temp.csv', 'r') as csvfile:
@@ -57,8 +89,16 @@ class SteganoImage():
         new_image.putdata(pixel_values)
         new_image.save(output_image_path)
 
-    def __update_csv_value(self, row_position_table, new_value_table):
+    def __update_csv_value(self, row_position_table: list, new_value_table: list):
         updated_rows = []
+        """
+        Updates a csv file with given rows and their values
+
+        Args:
+            row_postion_table ( list(int) ): List filled with ints used to know which rows were changed
+            new_value_table ( list(tuple(int)) ): List filled with tuples of 3 used to know new values of rows in csv file 
+
+        """
         with open(f'{ROOT_DIR}/resources/temp.csv', 'r', newline='') as csvfile:
             csvreader = csv.reader(csvfile)
             position = 0
@@ -75,6 +115,16 @@ class SteganoImage():
             csvwriter.writerows(updated_rows)
 
     def __update_row(self, selected, value):
+        """
+        Updates row with new value
+
+        Args:
+            selected (int): The selected value is used for choosing one of 3 values in row tuple 
+            value (int): The value is used as new value in tuple 
+
+        Returns:
+            list(str): Returns updated list
+        """
         selected = list(bin(selected))[2:]
         selected[len(selected) - 1] = value
         selected = str(int(''.join(selected), 2))
@@ -171,6 +221,15 @@ class SteganoImage():
 
     @deprecation.deprecated(deprecated_in="1.0.0.0", details="For 4K it takes around 90s. Use quick_encode")
     def encode(self, key, image, text, output=None):
+        """
+        Used for encoding message in pixels value of photo
+
+         Args:
+            key (str): The key to be used for encoding.
+            image (str): The path to the image file.
+            text (str): The text message to be encoded.
+            output (str, optional): The output has path where encoded photo will be. Defaults to None.
+        """
         cdmess, key = self.__get_coded_message(text=text, key=key)
         gen = self.__csv_row_generator()
         self.__putting_pixels_value_into_file(image)
@@ -202,6 +261,16 @@ class SteganoImage():
 
     @deprecation.deprecated(deprecated_in="1.0.0.0", details="For 4K it takes around 30s. Use quick_decode")
     def decode(self, key, image):
+        """
+        Decodes a text message from an encoded image using a given key.
+
+        Args:
+            key (str): The key to be used for decoding.
+            image (str): The path to the encoded image file.
+
+        Returns:
+            The decoded text message.
+        """
         self.__putting_pixels_value_into_file(image)
         gen = self.__csv_row_generator()
         length_of_key = len(key)
