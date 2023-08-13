@@ -1,0 +1,13 @@
+tk
+pytest
+pillow
+key-generator
+pytest-cov
+pytest-html
+customtkinter
+jellyfish
+funcy
+auto-py-to-exe
+pyinstaller-versionfile
+deprecation
+pdoc
